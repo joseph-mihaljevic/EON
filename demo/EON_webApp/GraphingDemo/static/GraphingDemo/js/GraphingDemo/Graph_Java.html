@@ -1,0 +1,50 @@
+{% block Graph_Java_Script %}
+
+<script>
+
+
+
+function InForm_parseData(createGraph,From,To,Step,csvFile, title) {
+ Papa.parse(csvFile, {
+   download: true,
+   complete: function(results) {
+     InForm_createGraph(results.data,From,To,Step, title);
+   }
+ });
+}
+
+
+function InForm_createGraph(data,From,To,Step, title) {
+ var years = [];
+ var silverMinted = ["Value_Slider0"];
+ var situadosPaid  = ["Value_Slider1"];
+ for (var i = From; i < To; i+=Step) {
+
+   situadosPaid.push(data[i][2]);
+   silverMinted.push(data[i][3]);
+ }
+
+ var chart = c3.generate({
+   bindto: '#chart',
+   data: {
+     columns: [
+       silverMinted,
+       situadosPaid
+     ]
+   },
+   zoom: {
+     enabled: true
+   },
+   legend: {
+     position: 'right'
+   }
+ });
+
+ var chartdivadsjja = d3.select('#chart').append('p')
+         .text(title)
+         .attr('style', 'position: absolute; display: block; top: 0; left: 50%; z-index: 100; transform: translateX(-50%);');
+}
+
+</script>
+
+{% endblock %}

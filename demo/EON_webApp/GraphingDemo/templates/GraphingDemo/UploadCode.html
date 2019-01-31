@@ -1,0 +1,87 @@
+{% extends "MainSite/Header.html" %}
+
+{% block Title %}
+<p>GraphingDemo <p>
+{% endblock %}
+
+{% block content %}
+<p>Upload your Code Here! <p>
+<form action="DisplayGraph" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="columns">
+    <div class="column">
+      {{ form.graph_title.label_tag }}
+      {{ form.graph_title }}
+    </div>
+    <div class="column">
+      {{ form.x_axis.label_tag }}
+      {{ form.x_axis }}
+    </div>
+    <div class="column">
+      {{ form.y_axis.label_tag }}
+      {{ form.y_axis }}
+    </div>
+    <div class="column">
+      {{ form.description.label_tag }}
+      {{ form.description }}
+    </div>
+    <div class="column">
+      {{ form.param1.label_tag }}
+      {{ form.param1 }}
+    </div>
+    <div class="column">
+      {{ form.param2.label_tag }}
+      {{ form.param2 }}
+    </div>
+    <div class="column">
+      {{ form.param3.label_tag }}
+      {{ form.param3 }}
+    </div>
+    <div class="column">
+      {{ form.param4.label_tag }}
+      {{ form.param4 }}
+    </div>
+    <div class="column">
+      {{ form.param5.label_tag }}
+      {{ form.param5 }}
+    </div>
+    <div class="column">
+      {{ form.param6.label_tag }}
+      {{ form.param6 }}
+    </div>
+    <div class="column">
+      {{ form.param7.label_tag }}
+      {{ form.param7 }}
+    </div>
+    <hr>
+    <div class="column">
+      {{ form.file.label_tag }}
+      {{ form.file }}
+    </div>
+  </div>
+  <input type="submit" value="Submit">
+</form>
+<!-- <form> -->
+  <!-- <div class="form-group">
+    <label for="exampleInputEmail1">Email address</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputFile">File input</label>
+    <input type="file" id="exampleInputFile">
+    <p class="help-block">Example block-level help text here.</p>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox"> Check me out
+    </label>
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+<p><a href="RunCode" target="blank">Run your Code</a></p> -->
+{% endblock %}

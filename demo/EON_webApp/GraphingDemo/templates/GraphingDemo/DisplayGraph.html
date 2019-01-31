@@ -1,0 +1,137 @@
+{% extends "MainSite/Header.html" %}
+
+{% block Header %}
+{% include "GraphingDemo/Includes/IncludeGraphJS.html" %}
+{% endblock %}
+
+
+{% block Title %}
+<p>GraphingDemo<p>
+{% endblock %}
+
+{% block content %}
+<p>Here is your Graph : {{ graph_title }}<p>
+
+<p>Description: {{ description }}</p>
+
+
+
+<form action="DisplayGraph" method="GRAPH" class="form-inline" enctype="multipart/form-data" >
+    {% csrf_token %}
+<div class="columns">
+
+  <div class="column">
+
+    <div class="rows">
+      <div class="row">
+        {{ form.param1.label_tag }}
+        {{ form.param1 }}
+      </div>
+      <div class="row">
+        {{ form.param2.label_tag }}
+        {{ form.param2 }}
+      </div>
+      <div class="row">
+        {{ form.param3.label_tag }}
+        {{ form.param3 }}
+      </div>
+      <div class="row">
+        {{ form.param4.label_tag }}
+        {{ form.param4 }}
+      </div>
+      <div class="row">
+        {{ form.param5.label_tag }}
+        {{ form.param5 }}
+      </div>
+      <div class="row">
+        {{ form.param6.label_tag }}
+        {{ form.param6 }}
+      </div>
+      <div class="row">
+        {{ form.param7.label_tag }}
+        {{ form.param7 }}
+      </div>
+
+    </div>
+  <div class="row">
+    <input type="Submit" value="Submit">
+  </div>
+  </div>
+
+
+</div>
+
+
+<script language="JavaScript">
+
+
+function InForm_parseData(csvFile,title) {
+
+ Papa.parse(csvFile, {
+   download: true,
+   complete: function(results) {
+     InForm_createGraph(results.data,title);
+   }
+ });
+}
+
+
+function InForm_createGraph(data,title) {
+  var From_id = document.getElementById("From");
+  var To_id = document.getElementById("To");
+  var Interval_id = document.getElementById("Interval");
+
+ var years = [];
+ var silverMinted = ["Value_Slider0"];
+ var situadosPaid  = ["Value_Slider1"];
+ var step = parseInt(Interval_id.value);
+ var to = parseInt(To_id.value);
+ for (var i = parseInt(From_id.value); i < to; i += step) {
+
+   situadosPaid.push(data[i][2]);
+   silverMinted.push(data[i][3]);
+ }
+
+ var chart = c3.generate({
+   bindto: '#chart',
+   data: {
+     columns: [
+       silverMinted,
+       situadosPaid
+     ]
+   },
+   zoom: {
+     enabled: true
+   },
+   legend: {
+     position: 'right'
+   }
+ });
+
+ var chartdivadsjja = d3.select('#chart').append('p')
+         .text(title)
+         .attr('style', 'position: absolute; display: block; top: 0; left: 50%; z-index: 100; transform: translateX(-50%);');
+}
+</script>
+</form>
+
+
+
+
+
+  <div class="container">
+    <div id="chart"></div>
+
+
+      <script src="/static/GraphingDemo/js/create-graph.js">
+      </script>
+
+      <script>
+          parseData(createGraph,1000,10000,5,"/static/private_directory/output.csv", "{{ graph_title }}","{{x_axis}}","{{y_axis}}");
+
+      </script>
+
+
+
+  </div>
+{% endblock %}
