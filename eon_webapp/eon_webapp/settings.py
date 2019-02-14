@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'user.apps.UserConfig',
+    'forum.apps.ForumConfig',
+    'model.apps.ModelConfig',
+    'dashboard.apps.DashboardConfig',
 ]
 
 MIDDLEWARE = [
@@ -51,10 +55,13 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'eon_webapp.urls'
 
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR+'/eon_webapp', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
