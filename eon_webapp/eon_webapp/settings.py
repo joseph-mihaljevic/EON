@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'qd4uugod8wey6x&9x!%wgl+k#t$#t371jzatxwxwk7=s3m6o^3'
+SECRET_KEY = 'qd4uugod8wey6x&9x!%wgl+k#t$#t371jzatxwxwk7=s3m6o^3' #create new on live server at some point!
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'eon_webapp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME' : 'eon',
+        'USER' : 'eon_admin',
+        'PASSWORD' : '3ncRYPt3d!!',
+        'HOST' : 'localhost',
+        'PORT' : '5432',
     }
 }
 
