@@ -11,67 +11,72 @@ body {
 }
 
 .sidenav {
-  height: 100%;
-  width: 0;
+  width: 200px;
   position: fixed;
   z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #111;
+  top: 12vh;
+  left: 10px;
+  background: #eee;
   overflow-x: hidden;
-  transition: 0.5s;
-  padding-top: 60px;
+  padding: 8px 0;
 }
 
 .sidenav a {
-  padding: 8px 8px 8px 32px;
+  padding: 15px 8px 6px 16px;
   text-decoration: none;
   font-size: 25px;
-  color: #818181;
+  color: #2196F3;
   display: block;
-  transition: 0.3s;
 }
 
 .sidenav a:hover {
-  color: #f1f1f1;
+  color: #064579;
 }
 
-.sidenav .closebtn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
+.main {
+  margin-left: 210px; /* Same width as the sidebar + left position in px */
+  font-size: 28px; /* Increased text to enable scrolling */
+  padding: 0px 10px;
 }
 
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}
   .sidenav a {font-size: 18px;}
 }
+#title_bar {
+  height: 10vh;
+  background-color: grey;
+}
+#user_section {
+  height: inherit;
+  float: right;
+  padding: 10px;
+}
 </style>
 </head>
 <body>
-<div id="mySidenav" class="sidenav">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+<div id="title_bar">
+  <img src="static/logo.png" alt="EON_logo"/>
+  <div id="user_section">
+    {% if user.is_authenticated %}
+      Hi {{ user.username }}!
+      <p><a href="{% url 'logout' %}">logout</a></p>
+      {% else %}
+      <a href="{% url 'login' %}">login</a>
+      <br>
+      <a href="{% url 'signup' %}">signup</a>
+    {% endif %}
+  </div>
+</div>
+<div class="sidenav">
   <a href="{% url 'dashboard' %}">Dashboard</a>
   <a href="{% url 'home' %}">Users</a>
   <a href="{% url 'forum_index' %}">Forums</a>
   <a href="{% url 'model_index' %}">Models</a>
 </div>
-<span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
-<main>
+<div class="main">
   {% block content %}
   {% endblock %}
-</main>
-<script>
-function openNav() {
-  document.getElementById("mySidenav").style.width = "250px";
-}
-
-function closeNav() {
-  document.getElementById("mySidenav").style.width = "0";
-}
-</script>
-
+</div>
 </body>
 </html>
