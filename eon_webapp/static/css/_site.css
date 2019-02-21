@@ -1,0 +1,112 @@
+/* Global */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Lato", sans-serif;
+}
+h1 {
+  text-align: center;
+  font-size: 36px;
+  padding: 10px;
+  margin: 15px 0 0 0;
+}
+
+/* Container, Sidenav, Main */
+
+.container{
+  display: grid;
+  grid-template-columns: 200px 1fr;
+}
+
+.container .sidenav {
+  position: relative;
+  display: inline-block;
+  width: 200px;
+  z-index: 1;
+  background: #eee;
+  overflow-x: hidden;
+  padding: 8px 0;
+}
+
+.container .sidenav a {
+  padding: 15px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #2196F3;
+  display: block;
+}
+
+.container .sidenav a:hover {
+  color: #064579;
+}
+
+.container .main {
+  display: inline-block;
+  max-width: 1400px;
+  margin-bottom: 20px;
+  justify-self: center;
+  font-size: 28px; /* Increased text to enable scrolling */
+}
+
+@media screen and (max-height: 450px) {
+  .container .sidenav {padding-top: 15px;}
+  .container .sidenav a {font-size: 18px;}
+}
+
+/* nav bar */
+navbar{
+  position: sticky;
+  display: grid;
+  height: 80px;
+  background-color: #c9c9c9;
+  grid-template-columns: 200px 1fr auto;
+  align-items: center;
+  grid-gap: 10px;
+}
+navbar img{
+  position: relative;
+  display: inline-block;
+  height: 63px;
+  margin-left: 5px;
+  justify-self: start;
+}
+navbar > div > a{
+  color: #000;
+  text-decoration: none;
+}
+navbar h1{
+  position: relative;
+  display: block;
+  vertical-align: top;
+  text-align: center;
+  justify-self: stretch;
+}
+navbar #user_section{
+  position: absolute;
+  display: inline-block;
+  right: 10px;
+  z-index: 1;
+}
+/* Footer styling */
+footer{
+  padding: 25px 0 25px 200px;
+  background-color: #c9c9c9;
+}
+footer .main{
+  display: block;
+  text-align: center;
+}
+footer .main a{
+  margin-right: 10px;
+  color: #000;
+  font-weight: 600;
+  font-size: 28px;
+}
+
+footer .socialBar{
+  padding: 30px 0;
+}
+
+footer .main a:last-of-type{
+  margin-right: 0;
+}

@@ -1,82 +1,72 @@
 <!-- templates/base.html -->
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
   <title>{% block title %}EON{% endblock %}</title>
-<style>
-body {
-  font-family: "Lato", sans-serif;
-}
 
-.sidenav {
-  width: 200px;
-  position: fixed;
-  z-index: 1;
-  top: 12vh;
-  left: 10px;
-  background: #eee;
-  overflow-x: hidden;
-  padding: 8px 0;
-}
+  <!-- Global styling -->
+  <link rel="stylesheet" type="text/css" href="{% static 'css/_site.css' %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/socialBar.css' %}"/>
+  <!-- Per-view styling -->
+  {% block stylesheets %}
+  {% endblock %}
 
-.sidenav a {
-  padding: 15px 8px 6px 16px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #2196F3;
-  display: block;
-}
+  <!-- Global JS (nothing rn) -->
+  <!-- Per-view JS -->
+  {% block javascripts %}
+  {% endblock %}
 
-.sidenav a:hover {
-  color: #064579;
-}
 
-.main {
-  margin-left: 210px; /* Same width as the sidebar + left position in px */
-  font-size: 28px; /* Increased text to enable scrolling */
-  padding: 0px 10px;
-}
-
-@media screen and (max-height: 450px) {
-  .sidenav {padding-top: 15px;}
-  .sidenav a {font-size: 18px;}
-}
-#title_bar {
-  height: 10vh;
-  background-color: grey;
-}
-#user_section {
-  height: inherit;
-  float: right;
-  padding: 10px;
-}
-</style>
 </head>
 <body>
-<div id="title_bar">
-  <img src="static/logo.png" alt="EON_logo"/>
-  <div id="user_section">
-    {% if user.is_authenticated %}
-      Hi {{ user.username }}!
-      <p><a href="{% url 'logout' %}">logout</a></p>
+<navbar>
+  <a href="{% url 'home' %}">
+    <img class="logo" src="{% static 'img/logos/Pandemic_Processing_Logo_small.png' %}" alt="EON_logo"/>
+  </a>
+  <div>
+    <a href="{% url 'home' %}">
+      <h1> Epidemiological Modeling Portal </h1>
+    </a>
+    <div id="user_section">
+      {% if user.is_authenticated %}
+      Hi {{ user.username }}! |
+      <a href="{% url 'logout' %}">logout</a>
       {% else %}
-      <a href="{% url 'login' %}">login</a>
-      <br>
+      <a href="{% url 'login' %}">login</a> |
       <a href="{% url 'signup' %}">signup</a>
-    {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</navbar>
+
+<div class="container">
+  <div class="sidenav">
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    <a href="{% url 'home' %}">Users</a>
+    <a href="{% url 'forum_index' %}">Forums</a>
+    <a href="{% url 'model_index' %}">Models</a>
+  </div>
+  <div class="main">
+    {% block content %}
+    {% endblock %}
   </div>
 </div>
-<div class="sidenav">
-  <a href="{% url 'dashboard' %}">Dashboard</a>
-  <a href="{% url 'home' %}">Users</a>
-  <a href="{% url 'forum_index' %}">Forums</a>
-  <a href="{% url 'model_index' %}">Models</a>
-</div>
-<div class="main">
-  {% block content %}
-  {% endblock %}
-</div>
+<footer>
+  <div class="main">
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+    <a href="#">Sponsors</a>
+    <a href="https://www.cefns.nau.edu/capstone/projects/CS/2019/PandemicProcessing-S19/" target="_blank">Capstone</a>
+  </div>
+  <div class="socialBar">
+    <a href="#">
+      <img class="off" src="{% static 'img/social_icons/email.off.png'%}" title="Email">
+      <img class="on" src="{% static 'img/social_icons/email.on.png'%}" title="Email">
+    </a>
+  </div>
+</footer>
 </body>
 </html>

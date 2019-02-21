@@ -1,0 +1,51 @@
+/* Splash page header */
+header#home_header{
+
+}
+header#home_header h1{
+  margin: 4vh 0 0;
+  font-size: 12vh;
+  text-align: center;
+  font-weight: 400;
+  letter-spacing: .75rem;
+}
+header#home_header h2{
+  font-size: 40px;
+  text-align: center;
+  font-weight: 400;
+}
+header#home_header quote{
+  display: block;
+  padding: 0 20px;
+  font-size: 20px;
+  text-align: center;
+}
+
+/* Popular Models */
+div#popular_models{
+
+}
+div.modelGrid article{
+  position: relative;
+}
+div.modelGrid article img{
+  position: relative;
+  display: block;
+  min-width: 300px;
+  width: 100%;
+  min-height: 300px;
+}
+div.modelGrid article h1{
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  margin: 0;
+  padding: 6px;
+  border-radius: 20px;
+  font-size: 28px;
+  text-align: center;
+  font-weight: 400;
+  color: #fff;
+  background-color: rgba(0,0,0,0.6);
+  transform: translateX(-50%);
+}
