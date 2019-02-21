@@ -1,7 +1,19 @@
-Items:
+<style>
+hr {
+  display: block;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  margin-left: auto;
+  margin-right: 0.5em;
+  border-style: inset;
+  border-width: 1px;
+}
+</style>
+
 {% for Model in UserModels %}
-  <div>
+  <div class="d">
     <label class="control-label col-sm-2">{{Model.model_name}} {{Model.model_name}} <a href="{% url 'Update-UserModel' Model.pk%}">edit</a></label>
 
+    <hr>
   </div>
 {% endfor%}

@@ -1,2 +1,88 @@
+<style>
+hr {
+  display: block;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  margin-left: auto;
+  margin-right: auto;
+  border-style: inset;
+  border-width: 1px;
+}
+</style>
+<div id="mySidenav" class="sidenav" >
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <a href="#">Epic First Model</a>
+  <hr>
+  <p style="color:white;">Comment By: cool guy: Text Text Text</p>
+  <hr>
+  <p style="color:white;">Comment By: less cool guy: Text Text Text</p>
+</div>
+
+<!-- templates/home.html-->
 {% extends 'base.html' %}
-Dashboard
+
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+  {% if user.is_authenticated %}
+
+    {% block stylesheets %}
+      {% include 'model/SideBar/ModelSideBar.html' %}
+    {% endblock %}
+
+<h1>Welcome to your Dashboard</h1>
+
+<section>
+    <h2>My Models</h2>
+    <hr>
+    {% include 'model/UserModels_list.html'%}
+
+
+
+    <button style="font-size:30px;cursor:pointer" onclick="openNav()">Epic First Model</button>
+
+
+    <script>
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+    }
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+    }
+    </script>
+
+</section>
+<hr>
+
+
+
+<section>
+  <h2>Recent replies</h2>
+</section>
+<hr>
+
+<section>
+  <h2>PopularModels</h2>
+</section>
+<hr>
+
+<section>
+  <h2>Groups</h2>
+</section>
+<hr>
+
+<section>
+  <h2>GroupInvites</h2>
+</section>
+<hr>
+
+
+  <p><a href="{% url 'logout' %}">logout</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+
+{% endblock %}
