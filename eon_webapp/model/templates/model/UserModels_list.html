@@ -1,0 +1,7 @@
+Items:
+{% for Model in UserModels %}
+  <div>
+    <label class="control-label col-sm-2">{{Model.model_name}} {{Model.model_name}} <a href="{% url 'Update-UserModel' Model.pk%}">edit</a></label>
+
+  </div>
+{% endfor%}
