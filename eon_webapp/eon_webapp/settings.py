@@ -132,5 +132,3 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = ['%s/static' % BASE_DIR]
 #root dir for everything static
 STATIC_ROOT = os.path.join(BASE_DIR,"collected_static")
-
-print(STATIC_ROOT)
