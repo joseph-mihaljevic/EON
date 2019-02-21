@@ -25,7 +25,7 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
     path('user/', include('django.contrib.auth.urls')),
     path('forum/', include('forum.urls')),
-    path('model/',include('model.urls')),
+    path('model/', include('model.urls')),
 ]
 
 # static url mapping for development

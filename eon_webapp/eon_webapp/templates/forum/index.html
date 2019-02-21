@@ -1,2 +1,18 @@
 {% extends 'base.html' %}
-forum index
+
+{% block title %}Forum Index{% endblock %}
+
+{% block content %}
+<h1>Forums</h1>
+  {% if forums %}
+  <ul>
+    {% for forum in forums %}
+      <li>
+        <a href="/forum/view/{{forum.id}}">{{ forum.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no forums.</p>
+  {% endif %}
+{% endblock %}
