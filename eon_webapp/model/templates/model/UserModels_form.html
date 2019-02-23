@@ -3,22 +3,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form action="" method="post" class="form-horizontal" enctype="multipart/model-data" >
-    {% csrf_token %}
-    {% include 'model/form-template.html'%}
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="Submit">Submit</button>
-      </div>
 
-    </div>
-
-</form>
 
 
 
 {% if user.is_authenticated %}
   Hi {{ user.username }}!
+
+
+  <form action="" method="post" class="form-horizontal" enctype="multipart/model-data" >
+      {% csrf_token %}
+      {% include 'model/form-template.html'%}
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="Submit">Submit</button>
+        </div>
+
+      </div>
+
+  </form>
+
+
+
+
   <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}
   <p>You are not logged in</p>
@@ -27,5 +34,3 @@
 
 
 {% endblock %}
-{{ form.file.label_tag }}
-{{ form.file }}

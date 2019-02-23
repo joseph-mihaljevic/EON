@@ -4,8 +4,17 @@
 
 {% block content %}
 
-{% include 'model/display-template.html'%}
+<form action="" method="post" class="form-horizontal" enctype="multipart/model-data" >
+    {% csrf_token %}
+    {% include 'model/form-template.html'%}
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="Submit">Submit</button>
+      </div>
 
+    </div>
+
+</form>
 
 <a href="{% url 'Create-UserModel' %}">Create New UserModel</a>
 <a href="{% url 'model_index' %}">Back to models</a>

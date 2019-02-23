@@ -4,12 +4,26 @@
 
 {% block content %}
 
-{% include 'model/display-template.html'%}
+
+<dl>
+  <dt>Model Name: {{UserModel.model_name}}</dt>
+  <dt>Created on:{{UserModel.created_on}}</dt>
+  <dt>Created By:NA</dt>
+  <dt>EONID:{{UserModel.EONid}}</dt>
+</dl>
 
 
+<div>
+Create Graphical View
+</div>
 
-<a href="{% url 'Create-UserModel' %}">Create New UserModel</a>
-<a href="{% url 'model_index' %}">Back to models</a>
+
+<dl>
+  <dt><a href="{% url 'Create-UserModel' %}" style="text-decoration:none">Create New UserModel</a></dt>
+  <dt><a href="{% url 'model_index' %} " style="text-decoration:none">Back to models</a></dt>
+</dl>
+
+
 
 
 {% endblock %}

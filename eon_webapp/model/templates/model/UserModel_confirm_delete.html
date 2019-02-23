@@ -9,9 +9,10 @@
 
 
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-
-  {% include 'model/UserModels_list.html'%}
+<form method="post">{% csrf_token %}
+  <p>Are you sure you want to delete "{{ UserModel.model_name }}"?</p>
+  <input type="submit" value="Confirm">
+</form>
 
   <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}

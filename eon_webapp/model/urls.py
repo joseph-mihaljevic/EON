@@ -7,8 +7,8 @@ urlpatterns = [
     url(r'CreateUserModel/', views.CreateUserModel.as_view(),name='Create-UserModel'),
 
     #url('DetailedUserModel', views.DetailedUserModel.as_view(),name='Detailed-UserModel'),
-    path(r'Display_UserModel/<int:pk>/', views.DetailedUserModel.as_view(),name='Display-UserModel'),
+    path(r'DisplayUserModel/<int:pk>/', views.DetailedUserModel.as_view(),name='Display-UserModel'),
     #url(r'UpdateUserModel/', views.UpdateUserModel.as_view(),name='Update-UserModel'),
     path(r'UpdateUserModel/<int:pk>/', views.UpdateUserModel.as_view(),name='Update-UserModel'),
-    #path('DeleteUserModel/<int:section>/', views.DeleteUserModel.as_view(),name='Delete-UserModel'),
+    path(r'DeleteUserModel/<int:pk>/', views.UserModelDelete.as_view(),name='Delete-UserModel'),
 ]
