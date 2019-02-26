@@ -12,6 +12,8 @@ class UserModel(models.Model):
     #author_PK = models.ForeignKey(User, on_delete=models.CASCADE)
     #user = models.ForeignKey(User)
     created_by = models.CharField(max_length=256,default='User')
+
+    code_language = models.CharField(max_length=30)
     folder_location = models.CharField(max_length=128)
     uploaded_code = models.FileField()
     #file = models.FileField(upload_to=content_file_name)
@@ -29,7 +31,6 @@ class UserModel(models.Model):
         return reverse('Display-UserModel', kwargs={'pk':self.pk})
         #return reverse('model_index')
     #def Some_url(self):
-
 
 
     def __str__(self):

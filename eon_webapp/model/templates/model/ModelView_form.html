@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<dl>
+  <dt>Model Name: {{UserModel.model_name}}</dt>
+  <dt>Created on:{{UserModel.created_on}}</dt>
+  <dt>Created By:NA</dt>
+  <dt>EONID:{{UserModel.EONid}}</dt>
+</dl>
+
+
+<form action="" method="post" class="form-horizontal" enctype="multipart/model-data" >
+    {% csrf_token %}
+    {% debug %}
+    {% include 'model/form-template.html'%}
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="Submit">Submit</button>
+      </div>
+
+    </div>
+
+</form>
+
+
+<a href="{% url 'Create-UserModel' %}">Create New UserModel</a>
+<a href="{% url 'model_index' %}">Back to models</a>
+
+
+{% endblock %}
