@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<dl>
+  <dt>Model Name: {{UserModel.model_name}}</dt>
+  <dt>Created on: {{UserModel.created_on}}</dt>
+  <dt>Created by: {{owner_name}}</dt>
+  <!-- <dt>EONID:{{UserModel.EONid}}</dt> -->
+</dl>
+
+<div id="model_view">
+{% for line in output %}
+{{line}}
+{% endfor %}
+</div>
+
+
+<dl>
+  <dt><a href="{% url 'model_index' %} " style="text-decoration:none">Back to models</a></dt>
+</dl>
+
+
+
+
+{% endblock %}

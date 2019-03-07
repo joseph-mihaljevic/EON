@@ -1,3 +1,5 @@
+<!-- `THIS FILE MAY BE USELESS; DELETE WHEN APPROPRIATE` -->
+
 <!DOCTYPE html>
 
 {% extends 'base.html' %}
@@ -8,7 +10,7 @@
 <dl>
   <dt>Model Name: {{UserModel.model_name}}</dt>
   <dt>Created on:{{UserModel.created_on}}</dt>
-  <dt>Created By:NA</dt>
+  <dt>Created By:{{owner_name}}</dt>
   <dt>EONID:{{UserModel.EONid}}</dt>
 </dl>
 

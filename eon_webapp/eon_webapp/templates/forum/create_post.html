@@ -1,0 +1,13 @@
+<!-- templates/registration/login.html -->
+{% extends 'base.html' %}
+
+{% block title %}Create Forum{% endblock %}
+
+{% block content %}
+<h2>Create Post</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Create</button>
+</form>
+{% endblock %}

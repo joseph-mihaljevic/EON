@@ -4,21 +4,17 @@
 
 {% block content %}
 
-
-<a href="{% url 'Create-UserModel' %}">Create New UserModel</a>
-
-
+<h1>Your models</h1>
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
 
   {% include 'model/UserModels_list.html'%}
-
-  <p><a href="{% url 'logout' %}">logout</a></p>
+<a href="{% url 'Create-UserModel' %}">Create New UserModel</a>
 {% else %}
-  <p>You are not logged in</p>
+  <p>Please login to view your models</p>
   <a href="{% url 'login' %}">login</a>
 {% endif %}
 
-
+<h2>Popular models</h1>
+  <p>models here</p>
 
 {% endblock %}

@@ -21,12 +21,11 @@ class CreateForum(generic.CreateView):
 
 class CreatePost(generic.CreateView):
     form_class = PostCreationForm
-    success_url = ('forum_index')
+    success_url = reverse_lazy('forum_index')
     template_name = 'forum/create_post.html'
 
 
 def ViewForum(request,in_id):
     forum = Forum.objects.get(id=int(in_id))
-    print(forum.name)
-    threads = Thread(forum=forum)
-    return render(request, 'forum/view.html', {"forum_name":forum.name,"forum_desc":forum.description})
+    threads = Thread.objects.filter(forum = forum)
+    return render(request, 'forum/view.html', {"forum_name":forum.name,"forum_desc":forum.description,threads:threads})
