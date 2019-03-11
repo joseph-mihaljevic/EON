@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+  {% if user.is_authenticated %}
+
+  {% for request in Friend %}
+    <div>
+      {{ request.user }} <a href="{% url 'change_friendship' 'accept' request.user.pk%}"> Accept</a>/<a href="{% url 'change_friendship' 'reject' request.pk%}"> decline</a>
+
+    </div>
+  {% endfor%}
+
+
+
+
+  <p><a href="{% url 'logout' %}">logout</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+
+{% endblock %}

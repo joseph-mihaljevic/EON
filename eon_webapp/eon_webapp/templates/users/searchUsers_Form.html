@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<html>
+<head>
+    <title>Search</title>
+</head>
+<body>
+
+    <form action="/user/search/Results/" method="get">
+        <input type="text" name="q">
+        <input type="submit" value="Search">
+    </form>
+</body>
+</html>
+
+{% endblock %}

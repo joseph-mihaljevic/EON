@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'forum.apps.ForumConfig',
     'model.apps.ModelConfig',
+    'group'
 ]
 
 MIDDLEWARE = [

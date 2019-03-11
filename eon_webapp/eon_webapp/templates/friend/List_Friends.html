@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+  {% if user.is_authenticated %}
+  <p><a href="{% url 'list_FriendRequest' %}">list_FriendRequests</a></p>
+  Friends:
+  {% for acc in Friend %}
+    <div>
+      {{ acc.user }}
+    </div>
+  {% endfor%}
+
+
+
+
+  <p><a href="{% url 'logout' %}">logout</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+
+{% endblock %}

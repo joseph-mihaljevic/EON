@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<a href="{% url 'user/search/' %}">search</a>
+<a href="{% url 'user/friends/' %}">friends</a>
+
+{% endblock %}
