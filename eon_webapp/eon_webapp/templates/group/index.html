@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+  {% if user.is_authenticated %}
+    <p><a href="#">Group invites</a></p>
+  <p><a href="{% url 'create_group'%}">Create Group</a></p>
+
+  Groups:
+  {% for Group in Groups %}
+    <div>
+      <p><a href="group/{{ Group.name }}/">{{ Group.name }}</a>
+    </div>
+  {% endfor%}
+
+
+
+
+  <p><a href="{% url 'logout' %}">logout</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+
+{% endblock %}

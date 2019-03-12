@@ -2,6 +2,43 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
+
+<style>
+.dropbtn {
+  background-color: #4CAF50;
+  color: black;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 4px 4px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
+</style>
+
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
@@ -32,11 +69,22 @@
     </a>
     <div id="user_section">
       {% if user.is_authenticated %}
-      Hi {{ user.username }}! |
+
+<div class="dropdown">
+  <button class="dropbtn">Welcome {{ user.username }}!</button>
+  <div class="dropdown-content">
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    <a href="{% url 'friends' %}">Friends</a>
+    <a href="{% url 'search_users' %}">Search Users</a>
+    <a href="{% url 'MyGroups' %}">MyGroups</a>
+    <a href="#">Search Groups</a>
+  </div>
+</div>|
       <a href="{% url 'logout' %}">logout</a>
       {% else %}
       <a href="{% url 'login' %}">login</a> |
       <a href="{% url 'signup' %}">signup</a>
+
       {% endif %}
     </div>
   </div>
@@ -44,11 +92,11 @@
 
 <div class="container">
   <div class="sidenav">
-    <a href="{% url 'dashboard' %}">Dashboard</a>
+    <a href="{% url 'home' %}">Home</a>
     <a href="{% url 'home' %}">Users</a>
     <a href="{% url 'forum_index' %}">Forums</a>
     <a href="{% url 'model_index' %}">Models</a>
-    <a href="#">Account</a>
+
   </div>
   <div class="main">
     {% block content %}
