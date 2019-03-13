@@ -11,11 +11,12 @@
 <ul>
   {% for thread in threads %}
     <li>
-      <a href="/forum/view/thread/{{thread.id}}">{{ thread.name }}</a>
+      <a href="/forum/view/thread/{{thread.id}}">{{ thread.thread_name }} | {{ thread.poster }}</a>
     </li>
   {% endfor %}
 </ul>
 {% else %}
   <p>There are no threads.</p>
 {% endif %}
+  <a href="/forum/{{ forum_id }}/create">New Post</a>
 {% endblock %}

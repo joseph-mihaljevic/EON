@@ -8,12 +8,11 @@
   <ul>
     {% for forum in forums %}
       <li>
-        <a href="/forum/view/{{forum.id}}">{{ forum.name }}</a>
+        <a href="/forum/view/{{forum.id}}">{{ forum.topic_name }}</a>
       </li>
     {% endfor %}
   </ul>
   {% else %}
     <p>There are no forums.</p>
   {% endif %}
-  <a href="/forum/create/">Create forum</a>
 {% endblock %}

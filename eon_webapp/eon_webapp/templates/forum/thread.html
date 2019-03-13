@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Forum View{% endblock %}
+
+{% block content %}
+<div class="col-sm">
+  <h3>Thread Name: {{thread.thread_name}}</h3>
+  <p>Author: {{thread.poster}}</p>
+  <p>Posted at: {{thread.date}}</p>
+</div>
+<div class="col-sm">
+  {{thread.description}}
+  {{field}}
+  {{field.error}}
+</div><br>
+<a href="/forum/view/thread/{{thread.id}}/comment"><button type="submit">Add Comment</button></a>
+{% if comments %}
+<ul>
+  {% for comment in comments %}
+    <li>
+      {{comment.content}}
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+  <p>There are no comments on this post.</p>
+{% endif %}
+{% endblock %}
