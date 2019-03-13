@@ -18,7 +18,9 @@
 <ul>
   {% for comment in comments %}
     <li>
-      {{comment.content}}
+      Posted by: {{comment.poster}}<br>
+      Created at: {{comment.date}}<br><br>
+      {{comment.content}}<br><br>
     </li>
   {% endfor %}
 </ul>

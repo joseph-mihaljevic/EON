@@ -21,3 +21,4 @@ class Comment(models.Model):
     content = models.TextField(max_length=800)
     thread = models.ForeignKey(Thread,on_delete=models.CASCADE)
     poster = models.ForeignKey(User,on_delete=models.CASCADE)
+    date = models.DateTimeField(default=datetime.datetime.now())
