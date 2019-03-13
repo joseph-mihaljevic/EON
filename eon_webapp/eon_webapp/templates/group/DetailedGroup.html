@@ -4,9 +4,8 @@
 {% block title %}Detailed group{% endblock %}
 
 {% block content %}
-v1.0
 <dl>
-  <dt>Group Name: {{Group.name}}</dt>
+  <h>Group Name: {{Group.name}}</h>
   <dt>About: {{Group.about}}</dt>
   <!--<dt>Created on: NA</dt> -->
 
@@ -15,56 +14,51 @@ v1.0
 </dl>
 
 Members:
+<hr>
 {% if members %}
   {% for acc in members %}
     <div>
       {{ acc.user }}
     </div>
+    <hr>
   {% endfor%}
 
 {% else %}
     <p>No Friends found!!</p>
 {% endif %}
 
+{% if Viewer_Member %}
+  Invite Friends:
+    {% if Friends %}
+      {% for acc in Friends %}
+        <div>
+          {{ acc.user }} <a href="#"> Invite </a>
+        </div>
+      {% endfor%}
 
-Invite Friends:
-  {% if Friends %}
-    {% for acc in Friends %}
-      <div>
-        {{ acc.user }} <a href="#"> Invite </a>
-      </div>
-    {% endfor%}
+    {% else %}
+        <p>No Friends found!!</p>
+    {% endif %}
 
-  {% else %}
-      <p>No Friends found!!</p>
-  {% endif %}
+    Group Requsests:
+      {% if Requsests %}
+        {% for acc in Requsests %}
+          <div>
+            {{ acc.user }} <a href="#"> Accept </a>
+          </div>
+        {% endfor%}
 
+      {% else %}
+          <p>No new requsests found!!</p>
+      {% endif %}
 
+    <a href="{% url 'Manage_members' Group.name 'search' 0%}">Search for users to Invite</a>
+<p></p>
+    <a href="{% url 'delete_group' Group.pk %}">Delete Group</a>
 
-
-<head>
-    <title>Search Users</title>
-</head>
-<body>
-    <form action="{% url 'searchfor_members' Group.name %}" method="get">
-        <h>Search for Users to invite: </h><input type="text" name="q">
-        <input type="submit" value="Search">
-    </form>
-</body>
-
-<p>You searched for: <strong>{{ query }}</strong></p>
-{% if users %}
-    <p>Found {{ users|length }} users{{ users|pluralize }}.</p>
-    <ul>
-        {% for user in users %}
-        <li>User: {{ user.username }} <a href="{% url 'change_friendship' 'add' user.pk%}"> Add friend </a> <a href="#"> Invite </a></li>
-
-        {% endfor %}
-    </ul>
 {% else %}
-    <p>No users matched your search criteria.</p>
+  Not a member ? <a href="#"> Apply </a>
 {% endif %}
-
 
 
 

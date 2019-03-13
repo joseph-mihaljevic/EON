@@ -4,8 +4,12 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+{% if user.is_authenticated %}
+<!-- TO LIST FRIENDS -->
+Friends List:
+<hr>
+{% endif %}
 
-<html>
 <head>
     <title>Search Users</title>
 </head>
@@ -16,6 +20,6 @@
         <input type="submit" value="Search">
     </form>
 </body>
-</html>
+
 
 {% endblock %}

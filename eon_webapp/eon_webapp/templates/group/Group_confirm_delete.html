@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<a href="{% url 'create_group' %}">Create New Group</a>
+
+
+{% if user.is_authenticated %}
+<form method="post">{% csrf_token %}
+  <p>Are you sure you want to delete "{{ Group.name }}"?</p>
+  <input type="submit" value="Confirm">
+</form>
+
+  <p><a href="{% url 'logout' %}">logout</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+
+
+
+{% endblock %}

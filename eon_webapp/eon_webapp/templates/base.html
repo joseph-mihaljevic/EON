@@ -2,7 +2,17 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-
+<style>
+hr {
+  display: block;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  margin-left: auto;
+  margin-right: auto;
+  border-style: inset;
+  border-width: 1px;
+}
+</style>
 <style>
 .dropbtn {
   background-color: #4CAF50;
@@ -78,6 +88,7 @@
     <a href="{% url 'search_users' %}">Search Users</a>
     <a href="{% url 'MyGroups' %}">MyGroups</a>
     <a href="#">Search Groups</a>
+    <a href="#">Group invites</a>
   </div>
 </div>|
       <a href="{% url 'logout' %}">logout</a>

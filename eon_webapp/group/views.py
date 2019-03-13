@@ -26,15 +26,34 @@ def searchGroup_Results(request):
 
 
 def view_group(request,groupname):
+    context = {}
     #print(groupname)
     viewing_group= Group.objects.get(name = groupname)
-    friend = Friend.objects.filter(viewing_user =request.user.pk)
-    members = GroupMember.objects.filter(group=viewing_group.pk)
 
+    members = GroupMember.objects.filter(group=viewing_group.pk)
+    if (request.user.is_authenticated):
+        friend = Friend.objects.filter(viewing_user =request.user.pk)
+        context["Friends"] = friend
+        if(members.filter(user=request.user)):
+            context['Viewer_Member'] = True
+            print(context['Viewer_Member'])
 
     if(viewing_group):
-        print(viewing_group.about)
-        return render(request, 'group/DetailedGroup.html', {"Group": viewing_group,'Friends':friend,'members':members})
+        context["Group"] = viewing_group
+
+        context["members"] = members
+        if (request.method =='SEARCH'):
+            if 'q' in request.GET and request.GET['q']:
+                q = request.GET['q']
+                users = User.objects.filter(username__icontains=q)
+                context['users'] = users
+                context['query'] = q
+            else:
+                return render(request, 'group/DetailedGroup.html', context)
+            return render(request, 'group/DetailedGroup.html', context)
+        else:
+            print(viewing_group.about)
+            return render(request, 'group/DetailedGroup.html', context)
 
     else:
         return render(request, 'friend/FormFill_FriendRequest.html', {"from": "Experienced error !"})
@@ -113,27 +132,52 @@ def CreateGroup(request):
 #def CreateGroup(request):
 #    make_Group
 
-def change_members(request):
-    return render(request, 'friend/FormFill_FriendRequest.html', {"from": "Coming soon!"})
 
-
-class DetailedGroupModel(generic.DetailView):
-    model = Group
-    context_object_name = "Group" #use this in the template
-    template_name = 'Group/Group_UserModel.html'
-    def get_queryset(self):
-        return Group.objects.all()
-
-class UpdateGroupModel(UpdateView):
+def Manage_members(request,groupname,operation,User_pk):
     context = {}
-    #context["ModelViewForm"] = ModelViewForm()
-    model = Group
+    #print(groupname)
+    viewing_group= Group.objects.get(name = groupname)
 
-    fields = ['group_name','description']
-    template_name = 'Group/Update_Group.html'
+    members = GroupMember.objects.filter(group=viewing_group.pk)
+    if (request.user.is_authenticated):
+        friend = Friend.objects.filter(viewing_user =request.user.pk)
+        context["Friends"] = friend
+        if(members.filter(user=request.user)):
+            context['Viewer_Member'] = True
+            print(context['Viewer_Member'])
 
-class DeleteGroupModel(DeleteView):
+    if(viewing_group):
+        context["Group"] = viewing_group
+
+        context["members"] = members
+        if (operation =='search'):
+            if 'q' in request.GET and request.GET['q']:
+                q = request.GET['q']
+                users = User.objects.filter(username__icontains=q)
+                context['users'] = users
+                context['query'] = q
+            return render(request, 'group/DetailedGroup_Search.html', context)
+        if (operation =='add'):
+            if():
+                #user exists+ not in group
+                #add user
+                return render(request, 'group/DetailedGroup.html', context)
+            #otherwise display error
+
+            #TODO implement Message Dialog
+            context["Message"] = "User added to group !"
+            context["Message"] = "User already in group !"
+            context["Message"] = "User doesnt exist !"
+            return render(request, 'group/DetailedGroup.html', context)
+        else:
+            return render(request, 'group/DetailedGroup.html', context)
+    else:
+        return render(request, 'friend/FormFill_FriendRequest.html', {"from": "Experienced error !"})
+
+
+
+class GroupDelete(DeleteView):
     model = Group
     context_object_name = "Group" #use this in the template
-    success_url = reverse_lazy('model_index')
-    template_name = 'Group/Group_confirm_delete.html'
+    success_url = reverse_lazy('MyGroups')
+    template_name = 'group/Group_confirm_delete.html'
