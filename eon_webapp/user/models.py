@@ -59,4 +59,4 @@ class FriendRequest(models.Model):
             user=user
         )
         FriendRequest.delete()
-        FriendRequest.save()
+        #FriendRequest.save()

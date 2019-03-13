@@ -10,12 +10,16 @@
   <p><a href="{% url 'create_group'%}">Create Group</a></p>
 
   Groups:
+  {% if Groups %}
+
   {% for Group in Groups %}
     <div>
-      <p><a href="group/{{ Group.name }}/">{{ Group.name }}</a>
+      <p><a href="{% url 'view-group' Group.name%}">{{ Group.name }}</a>
     </div>
   {% endfor%}
-
+  {% else %}
+      <p> you have no Groups matched your account.</p>
+  {% endif %}
 
 
 

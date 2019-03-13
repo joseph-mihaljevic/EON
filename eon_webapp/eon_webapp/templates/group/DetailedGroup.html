@@ -6,13 +6,66 @@
 {% block content %}
 v1.0
 <dl>
-  <dt>Group Name: <!--{{Group.name}}--></dt>
-  <dt>About: <!--{{Group.about}}--></dt>
-  <dt>Created on: NA</dt>
+  <dt>Group Name: {{Group.name}}</dt>
+  <dt>About: {{Group.about}}</dt>
+  <!--<dt>Created on: NA</dt> -->
 
   <dt>Created by: </dt>
   <!-- <dt>EONID:{{UserModel.EONid}}</dt> -->
 </dl>
+
+Members:
+{% if members %}
+  {% for acc in members %}
+    <div>
+      {{ acc.user }}
+    </div>
+  {% endfor%}
+
+{% else %}
+    <p>No Friends found!!</p>
+{% endif %}
+
+
+Invite Friends:
+  {% if Friends %}
+    {% for acc in Friends %}
+      <div>
+        {{ acc.user }} <a href="#"> Invite </a>
+      </div>
+    {% endfor%}
+
+  {% else %}
+      <p>No Friends found!!</p>
+  {% endif %}
+
+
+
+
+<head>
+    <title>Search Users</title>
+</head>
+<body>
+    <form action="{% url 'searchfor_members' Group.name %}" method="get">
+        <h>Search for Users to invite: </h><input type="text" name="q">
+        <input type="submit" value="Search">
+    </form>
+</body>
+
+<p>You searched for: <strong>{{ query }}</strong></p>
+{% if users %}
+    <p>Found {{ users|length }} users{{ users|pluralize }}.</p>
+    <ul>
+        {% for user in users %}
+        <li>User: {{ user.username }} <a href="{% url 'change_friendship' 'add' user.pk%}"> Add friend </a> <a href="#"> Invite </a></li>
+
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No users matched your search criteria.</p>
+{% endif %}
+
+
 
 
 {% endblock %}
