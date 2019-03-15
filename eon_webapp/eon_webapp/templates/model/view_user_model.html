@@ -3,11 +3,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-  {{ graph_name }}
-        <canvas id="graph" width="800px"></canvas>
+<div id="graph_div">
 </div>
-
 <form method="post" action="{{ url_path }}">
   {% csrf_token %}
   {% for param_dict in parameters %}
@@ -46,34 +43,25 @@
   <p>There are no comments on this post.</p>
 {% endif %}
 
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="http://dygraphs.com/dist/dygraph.js"></script>
 <script type="text/javascript">
-let x_array = {{ x_axis|safe }};
-let y_array = {{ y_axis|safe }};
-console.log(x_array);
-console.log(y_array);
+
+g = new Dygraph(
+    document.getElementById("graph_div"),
+    // For possible data formats, see http://dygraphs.com/data.html
+    // The x-values could also be dates, e.g. "2012/03/15"
+    {{ columns }},
+    {
+      // options go here. See http://dygraphs.com/options.html
+      legend: 'always',
+      animatedZooms: true,
+      title: "",
+      labels:["{{ x_axis_name }}","{{ y_axis_name }}"]
+    });
+
 
 function show_value(x,slider_name) {
   slider_name.innerHTML=x;
 }
-function renderChart(data, labels) {
-    var ctx = document.getElementById("graph").getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: "",
-                data: data,
-            }]
-        },
-        options: {
-                responsive: false
-        },
-    });
-}
-renderChart(x_array, y_array);
 </script>
 {% endblock %}

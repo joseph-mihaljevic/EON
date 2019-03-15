@@ -17,6 +17,15 @@ import subprocess
 import json
 import pandas as pd
 
+"""
+TODO:
+Make graph page refresh graph only (send data via js request?)
+Allow user to input paramters in a field for each parameter
+Clean up interfaces
+Add group permissions
+
+"""
+
 CODE_REPOSITORIES_PATH="/home/joe/EON/eon_webapp/model_code"
 
 class Index(generic.ListView):
@@ -206,11 +215,16 @@ def view_user_model(request,pk):
     # with open(csv_location, 'r') as csv_f:
     df = pd.read_csv(csv_location)
     df.rename(inplace=True,columns=lambda x: x.strip())
-    x_axis = list(df[specification_dict["graphs"]["graph"]["x_axis"]].values)
-    y_axis = list(df[specification_dict["graphs"]["graph"]["y_axis"]].values)
-    context["x_axis"]=x_axis
-    context["y_axis"]=y_axis
+    x_axis_name=specification_dict["graphs"]["graph"]["x_axis"]
+    y_axis_name=specification_dict["graphs"]["graph"]["y_axis"]
+    context["x_axis_name"]=x_axis_name
+    context["y_axis_name"]=y_axis_name
     context["graph_name"]=specification_dict["graphs"]["graph"]["name"].replace("+"," ")
+    columns=[]
+    for index,row in df.iterrows():
+        columns.append([row[x_axis_name],row[y_axis_name]])
+    print(columns)
+    context["columns"]=columns
     parameters=[]
     for index,parameter in enumerate(default_params):
         upper_bound=specification_dict["parameters"]["param_%i_upper_bound"%index]
