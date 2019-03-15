@@ -7,6 +7,8 @@ from django.views.generic.edit import CreateView,UpdateView,DeleteView,FormView
 from .forms import ModelViewForm,GraphSpecifyForm
 from .models import UserModel
 from .models import User
+from forum.models import Thread, Forum, Comment
+from forum.forms import CommentCreationForm
 
 import os
 import zipfile
@@ -43,6 +45,12 @@ class CreateUserModel(CreateView):
     def form_valid(self, form):
         user_model = form.save(commit=False)
         user_model.owner = self.request.user
+        user_model.thread = Thread.objects.create(
+        thread_name=user_model.model_name,
+        poster=self.request.user,
+        description="Auto generated first post for model: %s"%user_model.model_name,
+        forum=Forum.objects.get(pk=1),
+        )
         # TODO: ensure that folder location doesnt clash! usually not an issue but COULD happen
         model_folder_location = CODE_REPOSITORIES_PATH+"/"+str(user_model.owner) + "_"+str(random.randint(0,999999))
         user_model.folder_location=model_folder_location
@@ -174,6 +182,8 @@ def update_graph_json(request,model_id):
 def view_user_model(request,pk):
     model = UserModel.objects.get(pk=pk)
     context={"id":pk,"url_path":"/model/View/%i/"%pk}
+    context["thread"]=model.thread
+    context["comments"]=Comment.objects.filter(thread = model.thread)
     default_params=model.parameter_defaults.split(" ")
     if request.method=='POST':
         params_changed=str(request.body.decode("utf-8")).split('&')[1:]

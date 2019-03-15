@@ -4,6 +4,7 @@ from django.urls import reverse
 import datetime
 from django.db.models import signals
 from django.dispatch import Signal
+from forum.models import Thread
 import subprocess
 
 LANGUAGES = ["C","Python"]
@@ -22,6 +23,7 @@ class UserModel(models.Model):
     executable_file_name = models.CharField(max_length=30)
     created_on = models.DateTimeField(auto_now_add=True)
     parameter_defaults = models.CharField(max_length=60,default="")
+    thread = models.ForeignKey(Thread,on_delete=models.CASCADE)
     # TODO: add this: EONid = models.CharField(max_length=256)
 
     def get_absolute_url(self):
