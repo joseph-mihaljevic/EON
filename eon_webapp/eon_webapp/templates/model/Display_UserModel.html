@@ -13,15 +13,25 @@
 </dl>
 
 <div id="model_view">
-{% for line in output %}
-{{line}}
-{% endfor %}
+  <form method="post" action="{{ url_path }}">
+
+    {% csrf_token %}
+    {% include 'model/form-template.html'%}
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="Submit">Submit</button>
+      </div>
+
+    </div>
+
+  </form>
 </div>
 
 
 <dl>
   <dt><a href="{% url 'model_index' %} " style="text-decoration:none">Back to models</a></dt>
 </dl>
+<script type="text/javascript">
 
 
 

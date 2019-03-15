@@ -8,7 +8,7 @@
 {% if user.is_authenticated %}
 
   {% include 'model/UserModels_list.html'%}
-<a href="{% url 'Create-UserModel' %}">Create New UserModel</a>
+<a href="{% url 'Create-UserModel' %}">Upload Model</a>
 {% else %}
   <p>Please login to view your models</p>
   <a href="{% url 'login' %}">login</a>

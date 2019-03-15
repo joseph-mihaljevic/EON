@@ -1,14 +1,8 @@
 <!DOCTYPE html>
-
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-
-
-
-
 {% if user.is_authenticated %}
-
   <form action="" method="post" class="form-horizontal" enctype="multipart/form-data" >
       <div class="form-group">
         File: <input type="file" name="fileToUpload" id="fileToUpload" accept=".zip">
@@ -24,14 +18,20 @@
 
   </form>
 
-
-
-
-  <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">login</a>
 {% endif %}
 
-
+<!-- <script type="text/javascript">
+  index=1;
+  document.getElementById("add_field_button").addEventListener("click", function(){
+    let field = document.createElement("INPUT");
+    field.setAttribute("type", "text");
+    field.setAttribute("id","arg_"+index.toString());
+    field.setAttribute("class","argument_field");
+    index++;
+    document.getElementById("argument_fields_div").appendChild(field);
+    });
+</script> -->
 {% endblock %}

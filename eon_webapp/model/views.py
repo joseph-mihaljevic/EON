@@ -2,15 +2,17 @@ from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views import generic
+from django.shortcuts import redirect
 
-from django.views.generic.edit import CreateView,UpdateView,DeleteView
-from .forms import ModelViewForm
+from django.views.generic.edit import CreateView,UpdateView,DeleteView,FormView
+from .forms import ModelViewForm,GraphSpecifyForm
 from .models import UserModel
 from .models import User
 import os
 import zipfile
 import random
 import subprocess
+import json
 
 CODE_REPOSITORIES_PATH="/home/joe/EON/eon_webapp/model_code"
 
@@ -29,12 +31,11 @@ class Index(generic.ListView):
 
 class CreateUserModel(CreateView):
     model = UserModel
-    #model.created_by = request.user
-    fields = ['model_name','description','code_language','executable_file_name']
+    fields = ['model_name','description','code_language','executable_file_name','parameter_defaults']
     template_name = 'model/UserModel_Create.html'
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data["text_fields"]=['model_name','description','executable_file_name']
+        data["text_fields"]=['model_name','description','executable_file_name','parameter_defaults']
         data["languages"]=['C','Python']
         data["dropdown_fields"]=["code_language"]
         return data
@@ -60,7 +61,7 @@ class CreateUserModel(CreateView):
 
 
 
-class DetailedUserModel(generic.DetailView):
+class GraphSpecifyDetailedUserModel(generic.DetailView):
     model = UserModel
     context_object_name = "UserModel" #use this in the template
     template_name = 'model/Display_UserModel.html'
@@ -68,27 +69,40 @@ class DetailedUserModel(generic.DetailView):
         return UserModel.objects.all()
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data["url_path"] = "/model/UpdateGraphJson/"+str(data["UserModel"].id)
         data["owner_name"] = User.objects.get(pk=data["UserModel"].owner_id).username
-        # TODO: CHANGE THIS TO LOGGING v
+        data['form']=GraphSpecifyForm(data["UserModel"])
+        # TODO: CHANGE THIS TO LOGGING
         # runs the code in firejail within the directory
         print("RUNNING CODE")
-        run_command=["firejail","--private="+data["UserModel"].folder_location,"./"+data["UserModel"].executable_file_name,
-        "50",
-        "1.5",
-        ".5",
-        ".07692307692",
-        ".00005479452",
-        ".75",
-        ".25"]
+        if os.path.exists(data["UserModel"].folder_location+"/output.csv"):
+            os.remove(data["UserModel"].folder_location+"/output.csv")
+        params=data["UserModel"].parameter_defaults.split(" ")
+        run_command=["firejail","--private="+data["UserModel"].folder_location,"./"+data["UserModel"].executable_file_name]
+        run_command+=params
         subprocess.run(run_command)
         # output is now in output.csv (should be anyway...)
         # TODO: catch error if output.csv doesn't exist
         with open(data["UserModel"].folder_location+"/output.csv") as output_file:
             output = output_file.readlines()
         output = [x.strip() for x in output]
+        header = output[0].split(",")
+        # data_dict = {}
+        # for head in header:
+        #     data_dict[head]=[]
+        # for line in output[1:]:
+        #     line_contents=line.split(",")
+        #     for index,head in enumerate(header):
+        #         data_dict[head].append(line_contents[index])
+        # data["col1"]=data_dict[header[0]]
+        # data["col2"]=data_dict[header[1]]
         data["output"]=output
         return data
 
+class GraphSpecifyFormView(FormView):
+    form_class=GraphSpecifyForm
+    success_url=reverse_lazy('model_index')
+    template_name='home.html'
 
 class UpdateUserModel(UpdateView):
     context = {}
@@ -135,6 +149,30 @@ class UpdateModelView(UpdateView):
     def get_queryset(self):
         return UserModel.objects.all()
 
+def update_graph_json(request,model_id):
+    if request.method == 'POST':
+        input_field_list = str(request.body.decode("utf-8")).split('&')[1:]
+        json_dict = {}
+        json_dict["parameters"]={}
+        json_dict["graphs"]={}
+        for index,input_field in enumerate(input_field_list):
+            field,input=input_field.split("=")
+            if "param" in field:
+                json_dict["parameters"][field]=input
+            if "graph_title" in field:
+                x_axis=input_field_list[index+1].split("=")[1]
+                y_axis=input_field_list[index+2].split("=")[1]
+                json_dict["graphs"][input]={"x_axis":x_axis,"y_axis":y_axis}
+        print(json_dict)
+        model=UserModel.objects.get(pk=model_id)
+        with open('%s/specification.json'%str(model.folder_location), 'w+') as fp:
+            json.dump(json_dict, fp)
+        print(model.folder_location)
+    return redirect("view_user_model",pk=model_id)
+
+def view_user_model(request,pk):
+
+    return render(request, 'model/view_user_model.html',{"id":pk})
 
 def CreateModelViewForm(request):
     form = ModelViewForm()
