@@ -10,7 +10,7 @@ class Forum(models.Model):
 
 class Thread(models.Model):
     thread_name = models.CharField(max_length=30)
-    date = models.DateTimeField(default=datetime.datetime.now())
+    date=models.DateTimeField(auto_now_add=True)
     poster = models.ForeignKey(User,on_delete=models.CASCADE)
     description = models.TextField(max_length=300)
     forum = models.ForeignKey(Forum,on_delete=models.CASCADE)
@@ -21,4 +21,4 @@ class Comment(models.Model):
     content = models.TextField(max_length=800)
     thread = models.ForeignKey(Thread,on_delete=models.CASCADE)
     poster = models.ForeignKey(User,on_delete=models.CASCADE)
-    date = models.DateTimeField(default=datetime.datetime.now())
+    date=models.DateTimeField(auto_now_add=True)
