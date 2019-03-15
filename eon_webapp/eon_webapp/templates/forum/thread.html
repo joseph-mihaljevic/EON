@@ -15,13 +15,14 @@
 </div><br>
 <a href="/forum/view/thread/{{thread.id}}/comment"><button type="submit">Add Comment</button></a>
 {% if comments %}
-<ul>
+<ul style="list-style: none; padding-left: 0;">
   {% for comment in comments %}
     <li>
       Posted by: {{comment.poster}}<br>
       Created at: {{comment.date}}<br><br>
       {{comment.content}}<br><br>
     </li>
+    <hr />
   {% endfor %}
 </ul>
 {% else %}

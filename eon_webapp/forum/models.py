@@ -9,7 +9,7 @@ class Forum(models.Model):
         return self.topic_name
 
 class Thread(models.Model):
-    thread_name = models.CharField(max_length=30)
+    thread_name = models.CharField(max_length=80)
     date=models.DateTimeField(auto_now_add=True)
     poster = models.ForeignKey(User,on_delete=models.CASCADE)
     description = models.TextField(max_length=300)

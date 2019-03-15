@@ -5,11 +5,12 @@
 {% block content %}
 <h1>Forums</h1>
   {% if forums %}
-  <ul>
+  <ul style="list-style: none; padding-left: 0;">
     {% for forum in forums %}
       <li>
         <a href="/forum/view/{{forum.id}}">{{ forum.topic_name }}</a>
       </li>
+      <hr />
     {% endfor %}
   </ul>
   {% else %}
