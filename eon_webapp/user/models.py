@@ -4,6 +4,8 @@ from forum.models import Forum
 # Create your models here.
 from model.models import UserModel
 
+from django.contrib.auth.models import User
+
 
 
 
@@ -12,7 +14,23 @@ from model.models import UserModel
 #    liked_models = models.ForeignKey(User, related_name='vu_f',null=True, on_delete="remove")
 
 
+class Profile(models.Model):
+    user_pk = models.ForeignKey(User, on_delete=models.CASCADE)
+    pic = models.TextField(max_length=500)
+    bio = models.TextField(max_length=500, blank=True)
+    affiliation = models.TextField(max_length=500, blank=True)
+    name = models.TextField(max_length=500, blank=True)
+    @classmethod
+    def make_profile(cls, user_pk):
+        profile, created = cls.objects.get_or_create(
+            user_pk = user_pk,
+            name = 'please fill out',
+            pic = 'https://heapanalytics.com/wp-content/uploads/2013/12/interactive-line-graph.png',
+            bio = 'please fill out',
+            affiliation = 'please fill out'
+        )
 
+        profile.save()
 
 
 

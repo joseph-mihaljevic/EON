@@ -27,7 +27,6 @@ class Group(models.Model):
     #    return reverse('view-group', kwargs={'groupname':self.name})
     @classmethod
     def make_group(cls, name,about,user):
-
         print("1",name,about)
         Group, created = cls.objects.get_or_create(
             name = name,
@@ -43,33 +42,56 @@ class Group(models.Model):
 
 class GroupMember(models.Model):
     user  = models.ForeignKey(User,null=True, on_delete=models.CASCADE)
-    group = models.ManyToManyField(Group,null=True)
+    group = models.ManyToManyField(Group)
     admin = models.BooleanField(default=False)
     @classmethod
     def addAdmin(cls, group, user):
-        admin = GroupMember(user=user,admin = True)
-        admin.save()
-        admin.group.add(group)
-        admin.save()
+        Member = GroupMember(user=user,admin = True)
+        Member.save()
+        Member.group.add(group)
+        Member.save()
     @classmethod
     def addUser(cls, group, user):
-        groupMember, created = cls.objects.get_or_create(
+        Member = GroupMember(user=user,admin = False)
+        Member.save()
+        Member.group.add(group)
+        Member.save()
+    @classmethod
+    def removeUser(group, user):
+        Member, created = GroupMember.objects.get_or_create(
+            group = group,
+            user = user
+        )
+        Member.remove(group)
+class JoinGroupRequest(models.Model):
+    user         = models.ForeignKey(User,null=True, on_delete=models.CASCADE)
+    group        = models.ManyToManyField(Group)
+    @classmethod
+    def make_InviteGroupRequest(cls, group, user):
+        JoinGroupRequest, created = cls.objects.get_or_create(
             group=group,
             user=user
         )
-        print("groupmem.pk")
-        print(groupMember.pk)
-        groupMember.save()
 
-class JoinGroupRequest(models.Model):
-    user  = models.ForeignKey(User, related_name='j_gr', on_delete=models.CASCADE)
-    group        = models.ForeignKey(Group,on_delete=models.CASCADE)
+        JoinGroupRequest.save()
+    @classmethod
+    def make_InviteGroupRequest_1(cls, group, user):
+        #Join Group Request
+        JGR = JoinGroupRequest(user=user)
+        JGR.save()
+        JGR.group.add(group)
+        JGR.save()
+    def remove_InviteGroupRequest_1(group, user):
+        JGR, created = JoinGroupRequest.objects.get_or_create(
+            group = group,
+            user = user
+        )
+        JGR.delete()
 
-
-class InviteGroupRequest(models.Model):
+class GroupInvite(models.Model):
     invite_user  = models.ForeignKey(User, related_name='i_gr', on_delete=models.CASCADE)
     group_member = models.ForeignKey(User, related_name='fi_gr', on_delete=models.CASCADE)
-    group        = models.ForeignKey(Group,on_delete=models.CASCADE)
+    group        = models.ManyToManyField(Group)
     @classmethod
     def make_InviteGroupRequest(cls, viewing_user, user):
         FriendRequest, created = cls.objects.get_or_create(
@@ -78,6 +100,18 @@ class InviteGroupRequest(models.Model):
         )
 
         FriendRequest.save()
+    def make_GroupInvite( group, invite_user,group_member):
+        #Join Group Request
+        GI = GroupInvite(invite_user=invite_user,group_member=group_member)
+        GI.save()
+        GI.group.add(group)
+        GI.save()
+    def remove_GroupInvite(group, user):
+        GI, created = JoinGroupRequest.objects.get_or_create(
+            group = group,
+            user = user
+        )
+        GI.delete()
 #class GroupForum(models.Model):
 #    user = models.ForeignKey(User, on_delete=models.CASCADE)
 #    group = models.ForeignKey(Group,on_delete=models.CASCADE)

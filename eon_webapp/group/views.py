@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
-from .models import Group,GroupMember
+from .models import Group,GroupMember,JoinGroupRequest,GroupInvite
 from user.models import Friend
 from .forms import GroupForm
 from django.contrib.auth.models import User
@@ -28,15 +28,17 @@ def searchGroup_Results(request):
 def view_group(request,groupname):
     context = {}
     #print(groupname)
-    viewing_group= Group.objects.get(name = groupname)
+    viewing_group = Group.objects.get(name = groupname)
 
     members = GroupMember.objects.filter(group=viewing_group.pk)
     if (request.user.is_authenticated):
         friend = Friend.objects.filter(viewing_user =request.user.pk)
         context["Friends"] = friend
+        context["JoinGroupRequsts"] = JoinGroupRequest.objects.filter(group = viewing_group)
+        #print(context["JoinGroupRequsts"][0].user)
         if(members.filter(user=request.user)):
             context['Viewer_Member'] = True
-            print(context['Viewer_Member'])
+            #print(context['Viewer_Member'])
 
     if(viewing_group):
         context["Group"] = viewing_group
@@ -60,21 +62,7 @@ def view_group(request,groupname):
     #return render(request, 'users/DetailedUser.html')
 
 
-def list_groups(request):
-    #current_user = User.objects.get(pk =request.user.pk)
-    print("Calling group objects")
-    user_groups = Group.objects.all()
-    print("returning  group objects")
-    #list_friends = Friend.objects.filter(user = request.user.pk)
-    #print(list_friends)
-    #print(list_friends.count())
-    if(user_groups.count()):
-        return render(request, 'group/List_Groups.html', {"Groups": user_groups})
-    return render(request, 'group/List_Groups.html', {"from": "coming soon !"})
-    #if(list_friends.count()):
-        #return render(request, 'friend/List_Friends.html', {"from": "coming soon !"})
 
-    #return render(request, 'friend/FormFill_FriendRequest.html', {"from": "coming soon !"})
 
 class GroupIndex(generic.ListView):
     #UserModel.objects.get(author_PK=User.pk)
@@ -86,7 +74,10 @@ class GroupIndex(generic.ListView):
         return Group.objects.all()
 
 def list_groups(request):
-    group = Group.objects.all()
+    context = {}
+    context['GroupInvites'] = GroupInvite.objects.filter(invite_user = request.user)
+    context['Groups'] =  Group.objects.all()
+    #print(context['GroupInvites'] )
     #groupMember = GroupMember.objects.filter(user =request.user.pk).all()
     #print(groupMember[0].group)
     #group = User.objects.filter(pk =request.user.pk).groupmember_set.all()
@@ -94,7 +85,7 @@ def list_groups(request):
     #list_friends = Friend.objects.filter(user =request.user.pk)
     #print(list_friends)
     #print(list_friends.count())
-    return render(request, "group/index.html", {"Groups": group})
+    return render(request, "group/index.html", context)
 
 def CreateGroup(request):
 
@@ -148,7 +139,8 @@ def Manage_members(request,groupname,operation,User_pk):
 
     if(viewing_group):
         context["Group"] = viewing_group
-
+        context["joingroupRequsts"] = JoinGroupRequest.objects.filter(group = viewing_group)
+        print(context["joingroupRequsts"])
         context["members"] = members
         if (operation =='search'):
             if 'q' in request.GET and request.GET['q']:
@@ -157,6 +149,28 @@ def Manage_members(request,groupname,operation,User_pk):
                 context['users'] = users
                 context['query'] = q
             return render(request, 'group/DetailedGroup_Search.html', context)
+        if (operation =='apply'):
+            JoinGroupRequest.make_InviteGroupRequest_1(group = viewing_group,user=request.user)
+            return render(request, 'group/DetailedGroup_Search.html', context)
+
+        if (operation == 'AcceptAppliedRequest'):
+            newMember = User.objects.get(pk=User_pk)
+            JoinGroupRequest.remove_InviteGroupRequest_1(group = viewing_group,user=newMember)
+            GroupMember.addUser(group = viewing_group,user=newMember)
+            return render(request, 'group/DetailedGroup_Search.html', context)
+
+        if(operation =='Invite'):
+            newRequst = User.objects.get(pk=User_pk)
+            GroupInvite.make_GroupInvite(group = viewing_group,invite_user=newRequst,group_member=request.user)
+            print("invite")
+            #JoinGroupRequest.remove_InviteGroupRequest_1(group = viewing_group,user=newMember)
+            return render(request, 'group/DetailedGroup_Search.html', context)
+
+        if(operation == 'Remove'):
+            Member = User.objects.get(pk=User_pk)
+            GroupMemberRelationship = GroupMember.objects.get(group = viewing_group,user=Member)
+            GroupMemberRelationship.delete()
+            #GroupMember.addUser(group = viewing_group,user=newMember)
         if (operation =='add'):
             if():
                 #user exists+ not in group
@@ -172,7 +186,7 @@ def Manage_members(request,groupname,operation,User_pk):
         else:
             return render(request, 'group/DetailedGroup.html', context)
     else:
-        return render(request, 'friend/FormFill_FriendRequest.html', {"from": "Experienced error !"})
+        return render(request, 'friend/FormFill_FriendRequest.html', {"from": "Experienced group doesnt exist!"})
 
 
 

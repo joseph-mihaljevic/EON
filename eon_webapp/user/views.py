@@ -6,7 +6,7 @@ from django.views import generic
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from group.models import Group
 from django.contrib.auth.models import User
-from .models import Friend,FriendRequest
+from .models import Friend,FriendRequest,Profile
 
 #for my testing
 from django.http import HttpResponse
@@ -38,14 +38,31 @@ def searchUsers_Results(request):
         return HttpResponse('Please submit a search term.')
 
 
-def view_user(request,viewing_username):
-    viewing_user= User.objects.get(username=viewing_username)
-    if(viewing_user):
-        return render(request, 'users/DetailedUser.html', {"User": viewing_user})
-    return render(request, 'users/DetailedUser.html')
+def view_user(request,username):
+    context = {}
+    context['User'] = User.objects.get(username=username)
+    context['Prof'] = Profile.objects.filter(user_pk=context['User'])
+    print(context['Prof'].count())
+    #if(context['Prof'])
+    if(context['Prof'].count() == 0):
+
+        Profile.make_profile(user_pk=context['User'])
+        context['Prof'] = Profile.objects.filter(user_pk=context['User'])
+    print(context['Prof'].count())
+    if(username == request.user.username):
+        context['User_Prof'] = True
+    if(User):
+        #return render(request, 'friend/FormFill_FriendRequest.html', {"from": "you cannot friend yourself !"})
+        return render(request, 'users/DetailedUser.html',context)
+    return render(request, 'friend/FormFill_FriendRequest.html', {"from": "coming soon !"})
 
 
+class UpdateProfile(UpdateView):
+    context = {}
+    model = Profile
 
+    fields = ['pic','bio','affiliation']
+    template_name = 'model/Update_UserModel.html'
 
 
 

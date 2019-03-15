@@ -32,7 +32,7 @@ Members:
     {% if Friends %}
       {% for acc in Friends %}
         <div>
-          {{ acc.user }} <a href="#"> Invite </a>
+          {{ acc.user }} <a href="#"> Invite </a> <a href="{% url 'Manage_members' Group.name 'Invite' acc.user.pk%}"> Accept </a>
         </div>
       {% endfor%}
 
@@ -40,16 +40,16 @@ Members:
         <p>No Friends found!!</p>
     {% endif %}
 
-    Group Requsests:
-      {% if Requsests %}
-        {% for acc in Requsests %}
+    Join Group Requsests:
+      {% if JoinGroupRequsts %}
+        {% for acc in JoinGroupRequsts %}
           <div>
-            {{ acc.user }} <a href="#"> Accept </a>
+            {{ acc.user }} <a href="{% url 'Manage_members' Group.name 'AcceptAppliedRequest' acc.user.pk%}"> Accept </a>
           </div>
         {% endfor%}
 
       {% else %}
-          <p>No new requsests found!!</p>
+          <p>No new requsests to join found!!</p>
       {% endif %}
 
     <a href="{% url 'Manage_members' Group.name 'search' 0%}">Search for users to Invite</a>
@@ -57,7 +57,7 @@ Members:
     <a href="{% url 'delete_group' Group.pk %}">Delete Group</a>
 
 {% else %}
-  Not a member ? <a href="#"> Apply </a>
+  Not a member ? <a href="{% url 'Manage_members' Group.name 'apply' 0%}"> Apply </a>
 {% endif %}
 
 

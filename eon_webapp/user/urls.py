@@ -4,8 +4,10 @@ from django.conf.urls import include, url
 
 
 urlpatterns = [
-    path('<slug:username>', views.view_user,name='user'),
     path('signup/', views.SignUp.as_view(), name='signup'),
+
+    path('<slug:username>', views.view_user,name='display_UserInfo'),
+    path('edit/<int:pk>', views.UpdateProfile.as_view(),name='edit_UserInfo'),
     path('dashboard/', views.Dashboard.as_view(),name='dashboard'),
 
     path(r'search/', views.searchUsers_Form,name='search_users'),

@@ -59,7 +59,7 @@ Members:
         <p>Found {{ users|length }} users{{ users|pluralize }}.</p>
         <ul>
             {% for user in users %}
-            <li>User: {{ user.username }} <a href="{% url 'change_friendship' 'add' user.pk%}"> Add friend </a> <a href="{% url 'Manage_members' Group.name 'add' user.pk %}"> Invite </a></li>
+            <li>User: {{ user.username }} <a href="{% url 'change_friendship' 'add' user.pk%}"> Add friend </a> <a href="{% url 'Manage_members' Group.name 'Invite' user.pk %}"> Invite </a></li>
 
             {% endfor %}
         </ul>
