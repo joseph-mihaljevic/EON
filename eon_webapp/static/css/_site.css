@@ -15,7 +15,6 @@ h1 {
 
 .container{
   display: grid;
-  grid-template-columns: 200px 1fr;
 }
 
 .container .sidenav {
@@ -41,6 +40,8 @@ h1 {
 }
 
 .container .main {
+  position: relative;
+  bottom:200px;
   display: inline-block;
   max-width: 1400px;
   margin-bottom: 20px;

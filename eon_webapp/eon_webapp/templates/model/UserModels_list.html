@@ -13,7 +13,7 @@ hr {
 {% for Model in UserModels %}
   <div class="d">
     <label class="control-label col-sm-2">{{Model.model_name}} </label>
-      <a href="{% url 'Display-UserModel' Model.pk%}">view</a>
+      <a href="{% url 'view_user_model' Model.pk%}">view</a>
       <a href="{% url 'Update-UserModel' Model.pk%}">edit</a>
       <a href="{% url 'Delete-UserModel' Model.pk%}">delete</a>
 

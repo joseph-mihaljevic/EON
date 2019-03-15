@@ -3,16 +3,17 @@ from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views import generic
 from django.shortcuts import redirect
-
 from django.views.generic.edit import CreateView,UpdateView,DeleteView,FormView
 from .forms import ModelViewForm,GraphSpecifyForm
 from .models import UserModel
 from .models import User
+
 import os
 import zipfile
 import random
 import subprocess
 import json
+import pandas as pd
 
 CODE_REPOSITORIES_PATH="/home/joe/EON/eon_webapp/model_code"
 
@@ -162,7 +163,7 @@ def update_graph_json(request,model_id):
             if "graph_title" in field:
                 x_axis=input_field_list[index+1].split("=")[1]
                 y_axis=input_field_list[index+2].split("=")[1]
-                json_dict["graphs"][input]={"x_axis":x_axis,"y_axis":y_axis}
+                json_dict["graphs"]["graph"]={"x_axis":x_axis,"y_axis":y_axis,"name":input}
         print(json_dict)
         model=UserModel.objects.get(pk=model_id)
         with open('%s/specification.json'%str(model.folder_location), 'w+') as fp:
@@ -171,8 +172,46 @@ def update_graph_json(request,model_id):
     return redirect("view_user_model",pk=model_id)
 
 def view_user_model(request,pk):
-
-    return render(request, 'model/view_user_model.html',{"id":pk})
+    model = UserModel.objects.get(pk=pk)
+    context={"id":pk,"url_path":"/model/View/%i/"%pk}
+    default_params=model.parameter_defaults.split(" ")
+    if request.method=='POST':
+        params_changed=str(request.body.decode("utf-8")).split('&')[1:]
+        params_for_code_list=[]
+        for index,param in enumerate(default_params):
+            for param_changed in params_changed:
+                if str(index) in param_changed.split("=")[0]:
+                    param = param_changed.split("=")[1]
+            params_for_code_list.append(param)
+        if os.path.exists(model.folder_location+"/output.csv"):
+            os.remove(model.folder_location+"/output.csv")
+        run_command=["firejail","--private="+model.folder_location,"./"+model.executable_file_name]
+        run_command+=params_for_code_list
+        subprocess.run(run_command)
+    folder_location = str(model.folder_location)
+    csv_location = "%s/output.csv"%folder_location
+    json_location = "%s/specification.json"%folder_location
+    with open(json_location, 'r') as json_f:
+        specification_dict = json.load(json_f)
+    # with open(csv_location, 'r') as csv_f:
+    df = pd.read_csv(csv_location)
+    df.rename(inplace=True,columns=lambda x: x.strip())
+    x_axis = list(df[specification_dict["graphs"]["graph"]["x_axis"]].values)
+    y_axis = list(df[specification_dict["graphs"]["graph"]["y_axis"]].values)
+    context["x_axis"]=x_axis
+    context["y_axis"]=y_axis
+    context["graph_name"]=specification_dict["graphs"]["graph"]["name"].replace("+"," ")
+    parameters=[]
+    for index,parameter in enumerate(default_params):
+        upper_bound=specification_dict["parameters"]["param_%i_upper_bound"%index]
+        lower_bound=specification_dict["parameters"]["param_%i_lower_bound"%index]
+        if upper_bound!=lower_bound:
+            parameters.append({"name":"param_%i"%index,"default":parameter,
+            "upper_bound":upper_bound,
+            "lower_bound":lower_bound,
+            "step":(float(upper_bound)-float(lower_bound))/10000,})
+    context["parameters"]=parameters
+    return render(request, 'model/view_user_model.html',context)
 
 def CreateModelViewForm(request):
     form = ModelViewForm()
