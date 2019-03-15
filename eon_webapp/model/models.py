@@ -21,6 +21,7 @@ class UserModel(models.Model):
     description = models.CharField(max_length=256)
     executable_file_name = models.CharField(max_length=30)
     created_on = models.DateTimeField(auto_now_add=True)
+    parameter_defaults = models.CharField(max_length=60,default="")
     # TODO: add this: EONid = models.CharField(max_length=256)
 
     def get_absolute_url(self):
@@ -30,7 +31,7 @@ class UserModel(models.Model):
 
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
 
     def SaveGraphDiscriptions(self):
         print("Coming soon")
