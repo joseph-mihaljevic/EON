@@ -5,7 +5,8 @@
 {% if user.is_authenticated %}
   <form action="" method="post" class="form-horizontal" enctype="multipart/form-data" >
       <div class="form-group">
-        File: <input type="file" name="fileToUpload" id="fileToUpload" accept=".zip">
+        Model Code: <input type="file" name="model_code" id="model_code" accept=".zip">
+        Specs json: <input type="file" name="specs_json" id="specs_json" accept=".json">
       </div>
       {% csrf_token %}
       {% include 'model/form-template.html'%}

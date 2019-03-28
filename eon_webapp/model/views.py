@@ -40,14 +40,13 @@ class Index(generic.ListView):
 
     #def detail(request,):
 
-
 class CreateUserModel(CreateView):
     model = UserModel
-    fields = ['model_name','description','code_language','executable_file_name','parameter_defaults']
+    fields = ['model_name','description','code_language','executable_file_name']
     template_name = 'model/UserModel_Create.html'
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data["text_fields"]=['model_name','description','executable_file_name','parameter_defaults']
+        data["text_fields"]=['model_name','description','executable_file_name']
         data["languages"]=['C','Python']
         data["dropdown_fields"]=["code_language"]
         return data
@@ -65,7 +64,11 @@ class CreateUserModel(CreateView):
         user_model.folder_location=model_folder_location
         # Create folder for user code, then copy the file from memory to folder
         os.mkdir(model_folder_location)
-        user_code = self.request.FILES["fileToUpload"]
+        specs_json = self.request.FILES["specs_json"]
+        with open(model_folder_location+"/specification.json", 'wb+') as destination:
+            for chunk in specs_json.chunks():
+                destination.write(chunk)
+        user_code = self.request.FILES["model_code"]
         with open(model_folder_location+"/zipped_code.zip", 'wb+') as destination:
             for chunk in user_code.chunks():
                 destination.write(chunk)
@@ -95,7 +98,10 @@ class GraphSpecifyDetailedUserModel(generic.DetailView):
         print("RUNNING CODE")
         if os.path.exists(data["UserModel"].folder_location+"/output.csv"):
             os.remove(data["UserModel"].folder_location+"/output.csv")
-        params=data["UserModel"].parameter_defaults.split(" ")
+        json_location = "%s/specification.json"%folder_location
+        with open(json_location, 'r') as json_f:
+            specification_dict = json.load(json_f)
+        default_params=[param for param,key in enumerate(specification_dict["parameter_defaults"])]
         run_command=["firejail","--private="+data["UserModel"].folder_location,"./"+data["UserModel"].executable_file_name]
         run_command+=params
         subprocess.run(run_command)
@@ -171,12 +177,12 @@ def update_graph_json(request,model_id):
     if request.method == 'POST':
         input_field_list = str(request.body.decode("utf-8")).split('&')[1:]
         json_dict = {}
-        json_dict["parameters"]={}
+        json_dict["parameter_bounds"]={}
         json_dict["graphs"]={}
         for index,input_field in enumerate(input_field_list):
             field,input=input_field.split("=")
             if "param" in field:
-                json_dict["parameters"][field]=input
+                json_dict["parameter_bounds"][field]=input
             if "graph_title" in field:
                 x_axis=input_field_list[index+1].split("=")[1]
                 y_axis=input_field_list[index+2].split("=")[1]
@@ -193,7 +199,17 @@ def view_user_model(request,pk):
     context={"id":pk,"url_path":"/model/View/%i/"%pk}
     context["thread"]=model.thread
     context["comments"]=Comment.objects.filter(thread = model.thread)
-    default_params=model.parameter_defaults.split(" ")
+
+    folder_location = str(model.folder_location)
+    csv_location = "%s/output.csv"%folder_location
+    json_location = "%s/specification.json"%folder_location
+    with open(json_location, 'r') as json_f:
+        specification_dict = json.load(json_f)
+    default_params_dict=specification_dict["parameter_defaults"]
+    default_params=[]
+    for i in range(0,len(default_params_dict.keys())):
+        print(i)
+        default_params.append(specification_dict["parameter_defaults"]["param_%i_default"%i])
     if request.method=='POST':
         params_changed=str(request.body.decode("utf-8")).split('&')[1:]
         params_for_code_list=[]
@@ -207,11 +223,14 @@ def view_user_model(request,pk):
         run_command=["firejail","--private="+model.folder_location,"./"+model.executable_file_name]
         run_command+=params_for_code_list
         subprocess.run(run_command)
+    else:
+        if os.path.exists(model.folder_location+"/output.csv"):
+            os.remove(model.folder_location+"/output.csv")
+        run_command=["firejail","--private="+model.folder_location,"./"+model.executable_file_name]
+        run_command+=default_params
+        print(run_command)
+        subprocess.run(run_command)
     folder_location = str(model.folder_location)
-    csv_location = "%s/output.csv"%folder_location
-    json_location = "%s/specification.json"%folder_location
-    with open(json_location, 'r') as json_f:
-        specification_dict = json.load(json_f)
     # with open(csv_location, 'r') as csv_f:
     df = pd.read_csv(csv_location)
     df.rename(inplace=True,columns=lambda x: x.strip())
@@ -227,14 +246,14 @@ def view_user_model(request,pk):
     context["columns"]=columns
     parameters=[]
     for index,parameter in enumerate(default_params):
-        upper_bound=specification_dict["parameters"]["param_%i_upper_bound"%index]
-        lower_bound=specification_dict["parameters"]["param_%i_lower_bound"%index]
+        upper_bound=specification_dict["parameter_bounds"]["param_%i_upper_bound"%index]
+        lower_bound=specification_dict["parameter_bounds"]["param_%i_lower_bound"%index]
         if upper_bound!=lower_bound:
             parameters.append({"name":"param_%i"%index,"default":parameter,
             "upper_bound":upper_bound,
             "lower_bound":lower_bound,
             "step":(float(upper_bound)-float(lower_bound))/10000,})
-    context["parameters"]=parameters
+    context["parameter_bounds"]=parameters
     return render(request, 'model/view_user_model.html',context)
 
 def CreateModelViewForm(request):
