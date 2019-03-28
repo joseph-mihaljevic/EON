@@ -22,6 +22,9 @@ class Dashboard(generic.CreateView):
     template_name = 'dashboard.html'
 
 
+def view_Dashboard(request):
+
+    return render(request, 'dashboard.html', {"from": "coming soon !"})
 
 
 
@@ -42,13 +45,14 @@ def view_user(request,username):
     context = {}
     context['User'] = User.objects.get(username=username)
     context['Prof'] = Profile.objects.filter(user_pk=context['User'])
-    print(context['Prof'].count())
+    print(context['Prof'])
     #if(context['Prof'])
     if(context['Prof'].count() == 0):
-
         Profile.make_profile(user_pk=context['User'])
-        context['Prof'] = Profile.objects.filter(user_pk=context['User'])
-    print(context['Prof'].count())
+        context['Prof'] = Profile.objects.filter(user_pk=context['User'])[0]
+    else:
+        context['Prof'] = Profile.objects.filter(user_pk=context['User'])[0]
+    print(context['Prof'])
     if(username == request.user.username):
         context['User_Prof'] = True
     if(User):
@@ -59,10 +63,11 @@ def view_user(request,username):
 
 class UpdateProfile(UpdateView):
     context = {}
+    #context["Profile"] =
     model = Profile
 
-    fields = ['pic','bio','affiliation']
-    template_name = 'model/Update_UserModel.html'
+    fields = ['name','pic','email','bio','affiliation']
+    template_name = 'users/Update_Profile.html'
 
 
 

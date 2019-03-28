@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from forum.models import Forum
+from django.urls import reverse
 # Create your models here.
 from model.models import UserModel
 
@@ -18,16 +19,21 @@ class Profile(models.Model):
     user_pk = models.ForeignKey(User, on_delete=models.CASCADE)
     pic = models.TextField(max_length=500)
     bio = models.TextField(max_length=500, blank=True)
+    email = models.TextField(max_length=500, blank=True)
     affiliation = models.TextField(max_length=500, blank=True)
     name = models.TextField(max_length=500, blank=True)
+    def get_absolute_url(self):
+        return reverse('dashboard')
+        #return reverse('display_UserInfo', kwargs={'username':self.pk})
     @classmethod
     def make_profile(cls, user_pk):
         profile, created = cls.objects.get_or_create(
             user_pk = user_pk,
-            name = 'please fill out',
+            email = 'No Email',
+            name = 'No Name',
             pic = 'https://heapanalytics.com/wp-content/uploads/2013/12/interactive-line-graph.png',
-            bio = 'please fill out',
-            affiliation = 'please fill out'
+            bio = 'No Biography',
+            affiliation = 'No Affiliation'
         )
 
         profile.save()
