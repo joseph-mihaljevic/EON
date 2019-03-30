@@ -41,7 +41,7 @@ Invite Friends:
     {% if Friends %}
       {% for acc in Friends %}
         <div>
-          {{ acc.user }} <a href="#"> Invite </a> <a href="{% url 'Manage_Recruits' Group.name 'Invite' acc.user.pk%}"> Accept </a>
+          {{ acc.user }} <a href="{% url 'Manage_Recruits' Group.name 'Invite' acc.user.pk%}"> Invite </a>
         </div>
       {% endfor%}
 
