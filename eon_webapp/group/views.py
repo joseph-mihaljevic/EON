@@ -28,33 +28,28 @@ def searchGroup_Results(request):
 def view_group(request,groupname):
     context = {}
     #print(groupname)
-    viewing_group = Group.objects.get(name = groupname)
+    context["Group"] =  Group.objects.get(name = groupname)
+    context["Admin"] = GroupMember.UserHas_Manage_Privlege(userPK = request.user.pk,Group = context["Group"])
 
-    members = GroupMember.objects.filter(group=viewing_group.pk)
+    context["members"] = GroupMember.objects.filter(group = context["Group"].pk)
     if (request.user.is_authenticated):
-        friend = Friend.objects.filter(viewing_user =request.user.pk)
-        context["Friends"] = friend
-        context["JoinGroupRequsts"] = JoinGroupRequest.objects.filter(group = viewing_group)
+        context["Friends"] = Friend.objects.filter(viewing_user = request.user.pk)
+        context["JoinGroupRequsts"] = JoinGroupRequest.objects.filter(group = context["Group"])
+        context["Admin"] = True
         #print(context["JoinGroupRequsts"][0].user)
-        if(members.filter(user=request.user)):
+        if(context["members"].filter(user=request.user)):
             context['Viewer_Member'] = True
             #print(context['Viewer_Member'])
 
-    if(viewing_group):
-        context["Group"] = viewing_group
-
-        context["members"] = members
+    if(context["Group"]):
         if (request.method =='SEARCH'):
             if 'q' in request.GET and request.GET['q']:
-                q = request.GET['q']
-                users = User.objects.filter(username__icontains=q)
-                context['users'] = users
-                context['query'] = q
+                context['users'] = User.objects.filter(username__icontains=q)
+                context['query'] = request.GET['q']
             else:
                 return render(request, 'group/DetailedGroup.html', context)
             return render(request, 'group/DetailedGroup.html', context)
         else:
-            print(viewing_group.about)
             return render(request, 'group/DetailedGroup.html', context)
 
     else:
@@ -106,10 +101,12 @@ def CreateGroup(request):
         if form.is_valid():
             Group.make_group(name=context['name'],about=context['about'],user= request.user)
             #Group.objects.create(name = context['name'], about = context['about'])
-            return render(request, 'friend/FormFill_FriendRequest.html', {"from": "You just submitted a Group Form !"})
+            return render(request, 'group/Group_CreatedRedirect.html', {"Message": "Group: "+ context['name']+" Created !", "group":context['name']})
 
         else:
-            return render(request, 'friend/FormFill_FriendRequest.html', {"from": "You just submitted an invalid Group Form !"})
+            return render(request, '404.html',{"Message": "You just submitted an invalid Group Form !"})
+            #return render(request, 'friend/FormFill_FriendRequest.html', {"from": "You just submitted an invalid Group Form !"})
+    return render(request, '404.html',{"Message": "Experienced group doesnt exist!"})
     #model.created_by = request.user
 
     #context_object_name = ""
@@ -124,53 +121,54 @@ def CreateGroup(request):
 #    make_Group
 
 
-def Manage_members(request,groupname,operation,User_pk):
+def Manage_Recruits(request,groupname,operation,User_pk):
     context = {}
     #print(groupname)
-    viewing_group= Group.objects.get(name = groupname)
+    context["Group"] = Group.objects.get(name = groupname)
 
-    members = GroupMember.objects.filter(group=viewing_group.pk)
+    context["members"] = GroupMember.objects.filter(group=context["Group"].pk)
     if (request.user.is_authenticated):
-        friend = Friend.objects.filter(viewing_user =request.user.pk)
+        friend = Friend.objects.filter(viewing_user = request.user.pk)
         context["Friends"] = friend
-        if(members.filter(user=request.user)):
+        if(context["members"].filter(user=request.user)):
             context['Viewer_Member'] = True
             print(context['Viewer_Member'])
 
-    if(viewing_group):
-        context["Group"] = viewing_group
-        context["joingroupRequsts"] = JoinGroupRequest.objects.filter(group = viewing_group)
+    if(context["Group"]):
+        context["joingroupRequsts"] = JoinGroupRequest.objects.filter(group = context["Group"])
         print(context["joingroupRequsts"])
-        context["members"] = members
+
         if (operation =='search'):
             if 'q' in request.GET and request.GET['q']:
                 q = request.GET['q']
                 users = User.objects.filter(username__icontains=q)
                 context['users'] = users
                 context['query'] = q
-            return render(request, 'group/DetailedGroup_Search.html', context)
+            return render(request, 'group/DetailedGroup_InviteSearch.html', context)
+
         if (operation =='apply'):
-            JoinGroupRequest.make_InviteGroupRequest_1(group = viewing_group,user=request.user)
-            return render(request, 'group/DetailedGroup_Search.html', context)
+            JoinGroupRequest.make_InviteGroupRequest_1(group = context["Group"],user=request.user)
+            return render(request, 'group/DetailedGroup.html', context)
 
         if (operation == 'AcceptAppliedRequest'):
             newMember = User.objects.get(pk=User_pk)
-            JoinGroupRequest.remove_InviteGroupRequest_1(group = viewing_group,user=newMember)
-            GroupMember.addUser(group = viewing_group,user=newMember)
-            return render(request, 'group/DetailedGroup_Search.html', context)
+            JoinGroupRequest.remove_InviteGroupRequest_1(group = context["Group"],user=newMember)
+            GroupMember.addUser(group = context["Group"],user=newMember)
+            return render(request, 'group/DetailedGroup.html', context)
 
         if(operation =='Invite'):
             newRequst = User.objects.get(pk=User_pk)
-            GroupInvite.make_GroupInvite(group = viewing_group,invite_user=newRequst,group_member=request.user)
+            GroupInvite.make_GroupInvite(group = context["Group"],invite_user=newRequst,group_member=request.user)
             print("invite")
             #JoinGroupRequest.remove_InviteGroupRequest_1(group = viewing_group,user=newMember)
-            return render(request, 'group/DetailedGroup_Search.html', context)
+            return render(request, 'group/DetailedGroup.html', context)
 
         if(operation == 'Remove'):
             Member = User.objects.get(pk=User_pk)
-            GroupMemberRelationship = GroupMember.objects.get(group = viewing_group,user=Member)
+            GroupMemberRelationship = GroupMember.objects.get(group = context["Group"],user=Member)
             GroupMemberRelationship.delete()
             #GroupMember.addUser(group = viewing_group,user=newMember)
+            return render(request, '404.html',{"Message": "You have left the group:"+context["Group"]})
         if (operation =='add'):
             if():
                 #user exists+ not in group
@@ -185,8 +183,62 @@ def Manage_members(request,groupname,operation,User_pk):
             return render(request, 'group/DetailedGroup.html', context)
         else:
             return render(request, 'group/DetailedGroup.html', context)
-    else:
-        return render(request, 'friend/FormFill_FriendRequest.html', {"from": "Experienced group doesnt exist!"})
+    return render(request, '404.html',{"Message": "Experienced group doesnt exist!"})
+        #return render(request, 'friend/FormFill_FriendRequest.html', {"from": "Experienced group doesnt exist!"})
+
+def Manage_Members(request,groupname):
+    context = {}
+    #print(groupname)
+    context["Group"] = Group.objects.get(name = groupname)
+    context["Admin"] = GroupMember.UserHas_Manage_Privlege(userPK = request.user.pk,Group = context["Group"])
+
+    #print("if request ----")
+    if (request.user.is_authenticated):
+        context["Friends"] = Friend.objects.filter(viewing_user =request.user.pk)
+    #print("Groups ----")
+    #print(context["Group"].pk)
+    if(context["Group"]):
+        context["members"] = GroupMember.objects.filter(group=context["Group"].pk)
+        #print(context["members"])
+        #GroupMember.objects.filter(group=viewing_group.pk)
+        return render(request, 'group/Manage_Members.html',context)
+    return render(request, '404.html',{"Message": "Group Not Found!"})
+
+
+def Manage_Privlege(request,groupname,operation,User_pk):
+    context = {}
+    #print(groupname)
+    context["Group"] = Group.objects.get(name = groupname)
+    #context["Admin"] = True
+    context["Admin"] = GroupMember.UserHas_Manage_Privlege(userPK = request.user.pk,Group = context["Group"])
+
+
+    if(operation == "MakeAdmin"):
+        context['ActionPreformed'] = False
+        if (context["Admin"]):
+            context['ActionPreformed'] = GroupMember.changeRole(userPK= User_pk, Group= context["Group"],role=1)
+        return render(request, 'group/Manage_Privlege.html',context)
+
+    if(operation == "MakeModerator"):
+        context['ActionPreformed'] = False
+        if (context["Admin"]):
+            context['ActionPreformed'] = GroupMember.changeRole(userPK= User_pk, Group= context["Group"],role = 2)
+        return render(request, 'group/Manage_Privlege.html',context)
+
+    if(operation == "MakeMember"):
+        context['ActionPreformed'] = False
+        if (context["Admin"]):
+            context['ActionPreformed'] = GroupMember.changeRole(userPK= User_pk, Group= context["Group"],role = 3)
+        return render(request, 'group/Manage_Privlege.html',context)
+
+    if(operation == "RemoveMember"):
+        context['ActionPreformed'] = False
+        if (context["Admin"]):
+            context['ActionPreformed'] = GroupMember.removeUser(userPK= User_pk, Group= context["Group"])
+        return render(request, 'group/Manage_Privlege.html',context)
+
+    return render(request, '404.html',{"Message": "Something went wrong !"})
+
 
 
 

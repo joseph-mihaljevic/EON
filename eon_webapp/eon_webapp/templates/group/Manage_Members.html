@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Detailed group{% endblock %}
+
+{% block content %}
+<dl>
+  <h>{{Group.name}}</h>
+</dl>
+
+
+
+
+
+
+
+{% if Admin %}
+<style>
+.collapsible {
+  border-radius: 28px;
+  color: #000000;
+  font-size: 15px;
+  background-color: #80aaff;
+}
+
+.active, .collapsible:hover {
+  border-radius: 28px;
+  background-color: #555;
+}
+
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+</style>
+Manage Member's Roles:
+<a class="collapsible">Change View and Edit Privleges</a>
+<div class="content">
+  <small>
+    Make group activities:
+    <a href="">  Private </a> /
+    <a href=""> Public </a>
+    <br />
+    Make group edits:
+    <a href=""> Private </a> /
+    <a href=""> Public</a>
+   </small>
+</div>
+  {% if members %}
+    <hr>
+    {% for acc in members %}
+      <div>
+        {{ acc.user }}:
+        <a href="{% url 'display_UserInfo' acc.user %}"> view </a>
+        <a class="collapsible">Change Privleges</a>
+        <div class="content">
+          <small>
+            <a href="{% url 'Manage_Privlege' Group.name 'MakeAdmin' acc.user.pk %}"> Admin </a> /
+            <a href="{% url 'Manage_Privlege' Group.name 'MakeModerator' acc.user.pk %}"> Moderator </a> /
+            <a href="{% url 'Manage_Privlege' Group.name 'MakeMember' acc.user.pk %}"> Member </a> /
+            <a href="{% url 'Manage_Privlege' Group.name 'RemoveMember' acc.user.pk %}"> Remove</a>
+           </small>
+        </div>
+      </div>
+    {% endfor%}
+    <hr>
+    <script>
+      var coll = document.getElementsByClassName("collapsible");
+      var i;
+
+      for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+          this.classList.toggle("active");
+          var content = this.nextElementSibling;
+          if (content.style.display === "block") {
+            content.style.display = "none";
+          } else {
+            content.style.display = "block";
+          }
+        });
+      }
+    </script>
+  {% else %}
+    <p>No Members found!!</p>
+  {% endif %}
+
+{% else %}
+  Not an Admin or Moderator for: {{Group.name}}?  <a href=""> Apply </a>
+{% endif %}
+
+
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Detailed group{% endblock %}
+
+{% block content %}
+
+
+{% if Admin %}
+<dl>
+  <h>{{Managed_User.name}} Privlege for {{Group.name}} changed to: {{Privlege}}</h>
+</dl>
+
+{% else %}
+  Not an Admin or Moderator for {{Group.name}}: Action could not be preformed. <a href=""> Request Position </a>
+{% endif %}
+
+
+
+{% endblock %}

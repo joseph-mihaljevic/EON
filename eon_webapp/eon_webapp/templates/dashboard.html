@@ -46,17 +46,22 @@
 </section>
 <hr>
 
-
-
 <section>
-  <h2>Recent replies</h2>
+  <h2>Friends</h2>
 </section>
 <hr>
 
 <section>
-  <h2>PopularModels</h2>
+  <h2>Friend Requests</h2>
+  {% for request in Friend %}
+    <div>
+      {{ request.user }} <a href="{% url 'change_friendship' 'accept' request.user.pk%}"> Accept</a>/<a href="{% url 'change_friendship' 'reject' request.pk%}"> decline</a>
+    </div>
+  {% endfor%}
 </section>
 <hr>
+
+
 
 <section>
   <h2>Groups</h2>

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+  {% if user.is_authenticated %}
+Group: {{group}} Created !
+Visit {{group}}'s' Home Page: <a href="{% url 'view-group' group %}">{{group}}</a>
+
+
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+
+{% endblock %}

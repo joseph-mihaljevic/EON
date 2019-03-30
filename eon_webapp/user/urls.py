@@ -8,7 +8,7 @@ urlpatterns = [
 
     path('<slug:username>', views.view_user,name='display_UserInfo'),
     path('edit/<int:pk>', views.UpdateProfile.as_view(),name='edit_UserInfo'),
-    path('dashboard/', views.Dashboard.as_view(),name='dashboard'),
+    path('dashboard/', views.view_Dashboard,name='dashboard'),
 
     path(r'search/', views.searchUsers_Form,name='search_users'),
     path(r'search/Results/', views.searchUsers_Results),

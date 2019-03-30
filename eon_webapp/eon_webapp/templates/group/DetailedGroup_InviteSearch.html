@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Detailed group{% endblock %}
+
+{% block content %}
+v1.0
+{%  if user.is_authenticated %}
+<dl>
+  <dt>Group Name: {{Group.name}}</dt>
+
+</dl>
+
+
+    <head>
+        <title>Search Users</title>
+        <hr>
+    </head>
+
+
+    <p>You searched for: <strong>{{ query }}</strong></p>
+    {% if users %}
+        <p>Found {{ users|length }} users{{ users|pluralize }}.</p>
+        <ul>
+            {% for user in users %}
+            <li>User: {{ user.username }} <a href="{% url 'change_friendship' 'add' user.pk%}"> Add friend </a> <a href="{% url 'Manage_Recruits' Group.name 'Invite' user.pk %}"> Invite </a></li>
+
+            {% endfor %}
+        </ul>
+    {% else %}
+      <p>No users matched your search criteria.</p>
+    {% endif %}
+{% else %}
+  Log on
+{% endif %}
+
+
+
+{% endblock %}

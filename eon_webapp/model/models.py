@@ -5,6 +5,7 @@ import datetime
 from django.db.models import signals
 from django.dispatch import Signal
 from forum.models import Thread
+from group.models import Group
 import subprocess
 
 LANGUAGES = ["C","Python"]
@@ -23,6 +24,7 @@ class UserModel(models.Model):
     executable_file_name = models.CharField(max_length=30)
     created_on = models.DateTimeField(auto_now_add=True)
     thread = models.ForeignKey(Thread,on_delete=models.CASCADE)
+    group = models.ManyToManyField(Group)
     # TODO: add this: EONid = models.CharField(max_length=256)
 
     def get_absolute_url(self):

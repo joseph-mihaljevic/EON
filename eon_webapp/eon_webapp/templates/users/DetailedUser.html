@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<p>Account: {{ User.username }}</p>
+<p>Account: {{ Prof.username }}</p>
 <p>Name : {{Prof.name}}</p>
 <img src="{{Prof.pic}}" width="150" height="100">
 
@@ -16,7 +16,7 @@
 
 <p></p>
 
-{% if User_Prof %}
+{% if User.pk == Prof.user_pk %}
 <p> <a href="{% url 'edit_UserInfo' user.pk%}">Edit</a></p>
 {% else %}
 {% endif %}

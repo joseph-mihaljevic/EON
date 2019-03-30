@@ -12,13 +12,13 @@
   Groups:
   {% if Groups %}
 
-  {% for Group in Groups %}
-  <hr>
-    <div>
-      <p>{{ Group.name }}  <a href="{% url 'view-group' Group.name%}">View</a> <a href="{% url 'Manage_members' Group.name 'Remove' user.pk%}">Leave</a> </p><!--{% url 'Manage_members' Group.name 'leave' 0%} -->
-        <hr>
-    </div>
-  {% endfor%}
+    {% for Group in Groups %}
+    <hr>
+      <div>
+        <p>{{ Group.name }}  <a href="{% url 'view-group' Group.name%}">View</a></p><!-- <a href="{% url 'Manage_Recruits' Group.name 'Remove' user.pk%}">Leave</a>  -->
+          <hr>
+      </div>
+    {% endfor%}
   {% else %}
       <p> you have no Groups matched your account.</p>
   {% endif %}
@@ -28,12 +28,12 @@
     Group invites:
   {% if GroupInvites %}
     {% for Invite in GroupInvites %}
-      <p> {{Invite.group_member}} Invited you to their group: {{Invite.group}} <a href="{% url 'Manage_members' Invite.group.name 'Accept_Invite' user.pk%}">Accept</a> / <a href="#">Decline</a></p>
-
+      <p> {{Invite.group_member}} Invited you to their group: {{Invite.group}} <a href="{% url 'Manage_Recruits' Invite.group.name 'Accept_Invite' user.pk%}">Accept</a> / <a href="#">Decline</a></p>
     {% endfor%}
-    {% else %}
-        <p> you have no Groups matched your account.</p>
-    {% endif %}
+
+  {% else %}
+    <p> you have no Groups matched your account.</p>
+  {% endif %}
 
   <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}

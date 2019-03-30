@@ -23,8 +23,12 @@ class Dashboard(generic.CreateView):
 
 
 def view_Dashboard(request):
-
-    return render(request, 'dashboard.html', {"from": "coming soon !"})
+    friend = Friend.objects.filter(viewing_user =request.user.pk)
+    sent_request = FriendRequest.objects.filter(viewing_user= request.user.pk)
+    #TODO add models
+    #TODO ? add recent forms ?
+    return render(request, 'dashboard.html', {"Friend": friend,"sent_request": sent_request})
+    #return render(request, 'dashboard.html', {"from": "coming soon !"})
 
 
 
@@ -131,7 +135,7 @@ def change_friendship(request,operation,friends_pk):
 
 def list_friends(request):
     friend = Friend.objects.filter(viewing_user =request.user.pk)
-    print(friend)
+    #print(friend)
     #list_friends = Friend.objects.filter(user =request.user.pk)
     #print(list_friends)
     #print(list_friends.count())
