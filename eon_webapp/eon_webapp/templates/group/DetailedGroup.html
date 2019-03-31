@@ -3,7 +3,13 @@
 
 {% block title %}Detailed group{% endblock %}
 
+
+
+
 {% block content %}
+
+
+
 <dl>
   <h>Group Name: {{Group.name}}</h>
   <dt>About: {{Group.about}}</dt>
@@ -15,7 +21,7 @@
 
 Members:
 {% if members %}
-  {% if Admin %}
+  {% if Manage_Privlege %}
       <small><a href="{% url 'Manage_Members' Group.name %}"> Edit Member Privleges </a></small>
   {% endif %}
   <hr>
@@ -46,7 +52,7 @@ Invite Friends:
       {% endfor%}
 
     {% else %}
-        <p>No Friends found!!</p>
+        <p>No Friends outside the group found!!</p>
     {% endif %}
 <hr>
 
@@ -71,7 +77,7 @@ Join Group Requsests:
     <p><a href="{% url 'delete_group' Group.pk %}">Delete Group</a></p>
 
 {% else %}
-  Not a member ? <a href="{% url 'Manage_Recruits' Group.name 'apply' 0%}"> Apply </a>
+  Not a member ? <a href="{% url 'Manage_Recruits' Group.name 'Apply' 0%}"> Apply </a>
 {% endif %}
 
 

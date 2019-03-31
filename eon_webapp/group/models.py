@@ -55,25 +55,70 @@ class GroupMember(models.Model):
     user  = models.ForeignKey(User,null=True, on_delete=models.CASCADE)
     group = models.ManyToManyField(Group)
     admin = models.BooleanField(default=False)
-    role  = models.PositiveSmallIntegerField(choices=USER_PRIVILEGES_CHOICES)
+    role  = models.PositiveSmallIntegerField(choices = USER_PRIVILEGES_CHOICES)
     @classmethod
-    def UserHas_Manage_Privlege(cls, userPK,Group):
-        GroupMember, created = cls.objects.get_or_create(
-            group = Group,
+    def UserHas_Manage_Privlege(cls, userPK,group):
+        GroupMembers = cls.objects.filter(
+            group = group,
             user = userPK
         )
+
+        if not GroupMembers.count():
+            return False
+        GroupMember = GroupMembers[0]
+
         if ((GroupMember.role == 1) | (GroupMember.role == 2)):
             return True
-
         return False
         #if (userPK.role):
 
+    @classmethod
+    def UserHas_Edit_Privlege(cls, userPK,group):
+        print(group.Editable)
+        if (group.Editable):
+            return True
+        #print(userPK)
+
+        GroupMember = cls.objects.filter(
+            group = group,
+            user = userPK
+        )
+        if not GroupMember.count():
+            return False
+        GroupMember = GroupMember[0]
+        if ((GroupMember.role == 1) | (GroupMember.role == 2) | (GroupMember.role == 3)):
+            return True
+        return False
+
+    @classmethod
+    def UserHas_View_Privlege(cls, userPK,group):
+        if (not (group.Private)):
+            return True
+        GroupMember = cls.objects.filter(
+            group = Group,
+            user = userPK
+        )
+        if not GroupMember.count():
+            return False
+        GroupMember = GroupMember[0]
+        if ((GroupMember.role == 1) | (GroupMember.role == 2) | (GroupMember.role == 3)):
+            return True
+        return False
+    @classmethod
+    def UserIsMember(cls, userPK,group):
+        GroupMember = cls.objects.filter(
+            group = group,
+            user = userPK
+        )
+        if not GroupMember.count():
+            return False
+        return True
         #GroupMember.remove(group)
     @classmethod
-    def changeRole(cls, userPK, Group, role):
+    def changeRole(cls, userPK, group, role):
         print("calling get_or_create")
         GroupMember, created = cls.objects.get_or_create(
-            group = Group,
+            group = group,
             user = userPK
         )
         GroupMember.role = role
@@ -84,6 +129,8 @@ class GroupMember(models.Model):
         print(" GroupMember.admin changing To : ",GroupMember.admin)
         GroupMember.save()
         return True
+    #TODO change Parameter name user to userPK
+    #TODO change Parameter group to Group
     @classmethod
     def addAdmin(cls, group, user):
         Member = GroupMember(user=user,admin = True,role=1)
@@ -98,11 +145,11 @@ class GroupMember(models.Model):
         Member.save()
     @classmethod
     def removeUser(cls,group, user):
-        Member, created = cls.objects.get_or_create(
+        GroupMember = cls.objects.get(
             group = group,
             user = user
         )
-        Member.remove(group)
+        GroupMember.delete()
 
 
 
@@ -117,32 +164,46 @@ class JoinGroupRequest(models.Model):
         )
 
         JoinGroupRequest.save()
+
     @classmethod
-    def make_InviteGroupRequest_1(cls, group, user):
-        #Join Group Request
-        JGR = JoinGroupRequest(user=user)
-        JGR.save()
-        JGR.group.add(group)
-        JGR.save()
-    def remove_InviteGroupRequest_1(group, user):
-        JGR, created = JoinGroupRequest.objects.get_or_create(
-            group = group,
-            user = user
+    def JoinRequest_Made(cls, group, userPK):
+        JoinGR= cls.objects.filter(
+            group=group,
+            user=userPK
         )
-        JGR.delete()
+        if not JoinGR.count():
+            return False
+        return True
+
+    @classmethod
+    def make_InviteGroupRequest_1(cls, group, userPK):
+        userObject = User.objects.get(pk=userPK)
+        #Join Group Request
+        JoinGR = JoinGroupRequest(user=userObject)
+        JoinGR.save()
+        JoinGR.group.add(group)
+        JoinGR.save()
+    def remove_InviteGroupRequest_1(group, userPK):
+        JoinGR, created = JoinGroupRequest.objects.get_or_create(
+            group = group,
+            user = userPK
+        )
+        JoinGR.delete()
 
 class GroupInvite(models.Model):
     invite_user  = models.ForeignKey(User, related_name='i_gr', on_delete=models.CASCADE)
     group_member = models.ForeignKey(User, related_name='fi_gr', on_delete=models.CASCADE)
     group        = models.ManyToManyField(Group)
     @classmethod
-    def make_InviteGroupRequest(cls, viewing_user, user):
-        FriendRequest, created = cls.objects.get_or_create(
-            viewing_user=viewing_user,
-            user=user
+    def GroupInvite_Made(cls, group, invite_userPK):
+        GI = cls.objects.filter(
+            group = group,
+            invite_user = invite_userPK
         )
+        if not GI.count():
+            return False
+        return True
 
-        FriendRequest.save()
     def make_GroupInvite( group, invite_user,group_member):
         #Join Group Request
         GI = GroupInvite(invite_user=invite_user,group_member=group_member)

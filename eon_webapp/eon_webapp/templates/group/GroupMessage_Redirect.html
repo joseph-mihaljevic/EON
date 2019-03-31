@@ -1,0 +1,13 @@
+<!-- templates/home.html-->
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}{{Message}}{% endblock %}
+
+{% block content %}
+  <small>{{Message}}</small>
+    <br />
+  Visit {{Group.name}}'s' Home Page: <a href="{% url 'view-group' Group.name %}">{{Group.name}}</a>
+
+{% endblock %}
