@@ -41,7 +41,8 @@ def view_group(request,groupname):
     if (request.user.is_authenticated):
         context["Friends"] = Friend.objects.filter(viewing_user = request.user.pk)
         context["Friends"] = [x for x in context["Friends"] if not GroupMember.UserIsMember(group = context["Group"],userPK=x.pk)]
-        print("filtered friends;",context["Friends"])
+
+        #print("filtered friends;",context["Friends"])
         context["JoinGroupRequsts"] = JoinGroupRequest.objects.filter(group = context["Group"])
         context["Admin"] = True
         #print(context["JoinGroupRequsts"][0].user)
@@ -64,7 +65,9 @@ def view_group(request,groupname):
         return render(request, 'friend/FormFill_FriendRequest.html', {"from": "Experienced error !"})
     #return render(request, 'users/DetailedUser.html')
 
-
+def Edit_group(request,groupname):
+    context["Message"] = "You are not signed in with the privlege to add users!"
+    return render(request, 'group/GroupMessage_Redirect.html',context)
 
 
 class GroupIndex(generic.ListView):
@@ -78,7 +81,6 @@ class GroupIndex(generic.ListView):
 
 def list_groups(request):
     context = {}
-    context['GroupInvites'] = GroupInvite.objects.filter(invite_user = request.user)
     context['Groups'] =  Group.objects.all()
     #print(context['GroupInvites'] )
     #groupMember = GroupMember.objects.filter(user =request.user.pk).all()
@@ -89,6 +91,14 @@ def list_groups(request):
     #print(list_friends)
     #print(list_friends.count())
     return render(request, "group/index.html", context)
+
+def List_UsersGroups(request):
+    context = {}
+
+    context['Groups'] = GroupMember.Get_UserGroups(request.user.pk)
+    context['GroupInvites'] = GroupInvite.objects.filter(invite_user = request.user)
+
+    return render(request, "group/List_UsersGroups.html", context)
 
 def CreateGroup(request):
 
@@ -158,7 +168,7 @@ def Manage_Recruits(request,groupname,operation,userPK):
             return render(request, 'group/DetailedGroup_InviteSearch.html', context)
 
         if (operation =='Apply'):
-            if not JoinGroupRequest.JoinRequest_Made(group = context["Group"],userPK=request.user.pk):
+            if not JoinGroupRequest.JoinRequest_Made(group = context["Group"],userPK = request.user.pk):
                 if not GroupInvite.GroupInvite_Made(group = context["Group"],invite_userPK=request.user.pk):
                     if not GroupMember.UserIsMember(group = context["Group"],userPK=request.user.pk):
                         JoinGroupRequest.make_InviteGroupRequest_1(group = context["Group"],userPK=request.user.pk)
@@ -259,6 +269,7 @@ def Manage_Members(request,groupname):
         #GroupMember.objects.filter(group=viewing_group.pk)
         return render(request, 'group/Manage_Members.html',context)
     return render(request, '404.html',{"Message": "Group Not Found!"})
+
 
 
 def Manage_Privlege(request,groupname,operation,User_pk):

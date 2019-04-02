@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+  {% if user.is_authenticated %}
+
+  <h><b>Your Groups</b></h>
+  <small>(<a href="{% url 'create_group'%}">Create Group</a>)</small>
+  <br />
+  <hr>
+  {% if Groups %}
+    {% for Group in Groups %}
+      <div>
+        <p>{{ Group.name }}  <a href="{% url 'view-group' Group.name%}">View</a></p><!-- <a href="{% url 'Manage_Recruits' Group.name 'Remove' user.pk%}">Leave</a>  -->
+      </div>
+    {% endfor%}
+  {% else %}
+      <p> You have no Groups matched your account.</p>
+  {% endif %}
+  <hr>
+
+  <br />
+  <br />
+  <h><b>Group invites:</b></h>
+  <hr>
+  {% if GroupInvites %}
+    {% for Invite in GroupInvites %}
+      <p> {{Invite.group_member}} Invited you to their group: {{Invite.group}} <a href="{% url 'Manage_Recruits' Invite.group.name 'Accept_Invite' user.pk%}">Accept</a> / <a href="#">Decline</a></p>
+    {% endfor%}
+
+  {% else %}
+    <p> You have no Group Invites matched your account.</p>
+  {% endif %}
+
+
+  <p><a href="{% url 'logout' %}">logout</a></p>
+  {% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+
+{% endblock %}

@@ -6,18 +6,21 @@
 {% block content %}
 
   {% if user.is_authenticated %}
+    <h><b>Friend Requests:</b></h>
+    <hr>
+    {% if Friend_Requests %}
+      {% for request in Friend_Requests %}
+        <div>
+          {{ request.user }} <a href="{% url 'change_friendship' 'accept' request.user.pk%}"> Accept</a>/<a href="{% url 'change_friendship' 'reject' request.pk%}"> decline</a>
+        </div>
+      {% endfor%}
+    {% else %}
+        <p> You have no New Friend Requsets matched your account.</p>
+    {% endif %}
 
-  {% for request in Friend %}
-    <div>
-      {{ request.user }} <a href="{% url 'change_friendship' 'accept' request.user.pk%}"> Accept</a>/<a href="{% url 'change_friendship' 'reject' request.pk%}"> decline</a>
 
-    </div>
-  {% endfor%}
+    <p>Back to friends: <a href="{% url 'friends' %}"> friends</a></p>
 
-
-
-
-  <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">login</a>

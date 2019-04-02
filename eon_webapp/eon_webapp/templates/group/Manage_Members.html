@@ -5,11 +5,9 @@
 
 {% block content %}
 <dl>
-  <h>{{Group.name}}</h>
+  <h><b>{{Group.name}}</b></h>
+  <hr>
 </dl>
-
-
-
 
 
 
@@ -35,21 +33,28 @@
   background-color: #f1f1f1;
 }
 </style>
-Manage Member's Roles:
-<a class="collapsible">Change View and Edit Privleges</a>
-<div class="content">
-  <small>
-    Make group activities:
-    <a href="">  Private </a> /
-    <a href=""> Public </a>
-    <br />
-    Make group edits:
-    <a href=""> Private </a> /
-    <a href=""> Public</a>
-   </small>
-</div>
+<small>
+  <b>Group Settings:</b>
+</small>
+
+<a class="collapsible">Edit</a>
+  <div class="content">
+    <small>
+      Make group activities:
+      <a href="">  Private </a> /
+      <a href=""> Public </a>
+      <br />
+      Make group edits:
+      <a href=""> Private </a> /
+      <a href=""> Public</a>
+    </small>
+  </div>
+
+<br />
+<br />
+<h><b>Manage Member's Privleges:</b></h>
+<hr>
   {% if members %}
-    <hr>
     {% for acc in members %}
       <div>
         {{ acc.user }}:

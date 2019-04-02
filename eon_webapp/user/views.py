@@ -1,13 +1,17 @@
 from django.shortcuts import render
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import UserCreationForm,PasswordChangeForm,UserChangeForm
 from django.urls import reverse_lazy
 from django.views import generic
+from django.shortcuts import redirect
 
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from group.models import Group
 from django.contrib.auth.models import User
 from .models import Friend,FriendRequest,Profile
-
+from user.forms import ChangeUserNameForm
+from django.contrib import messages
+from group.models import Group,GroupMember,JoinGroupRequest,GroupInvite
 #for my testing
 from django.http import HttpResponse
 
@@ -22,12 +26,74 @@ class Dashboard(generic.CreateView):
     template_name = 'dashboard.html'
 
 
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            #request.user.logout()
+            #return redirect('dashboard')
+            return view_user(request,user.username)
+            #return redirect('change_UserPassword')
+        else:
+            messages.error(request, 'Please correct the error(s) below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'users/Change_UserPassword.html', {
+        'form': form
+    })
+
+
+def change_username(request):
+    if request.method == 'POST':
+        form = ChangeUserNameForm(request.POST)#request.user, request.POST
+        if form.is_valid():
+            newusername = form.data["UserName"]
+            print("NewUsername.objects:")
+            print(User.objects.filter(username=newusername))
+            if User.objects.filter(username=newusername).exists():
+                print("Taken")
+                messages.error(request, 'This UserName has already been taken!')
+                #raise messages.error(request,u'Username "%s" is not available.' % newusername)
+                #messages.success(request, 'This UserName has already been taken!')
+
+            else:
+                print("Changing")
+                user = User.objects.get(username = request.user)
+                user.username = newusername
+                user.save()
+                request.user.username = newusername
+                messages.success(request, 'Your UserName was successfully updated!')
+
+                return view_user(request,user.username)
+
+        else:
+            print("invalid form?")
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = ChangeUserNameForm()#instance=request.user
+
+        print("else:")
+        print(form)
+
+    return render(request, 'users/Change_UserName.html', {
+        'form': form
+    })
+
+
+
 def view_Dashboard(request):
-    friend = Friend.objects.filter(viewing_user =request.user.pk)
-    sent_request = FriendRequest.objects.filter(viewing_user= request.user.pk)
+    context = {}
+    context['Friend'] = Friend.objects.filter(viewing_user =request.user.pk)
+    context['FriendRequest'] = FriendRequest.objects.filter(viewing_user= request.user.pk)
+    context['Groups'] = GroupMember.Get_UserGroups(request.user.pk)
+    #messages.success(request, 'Dashboard still being worked on !')
+    #return redirect('dashboard')
     #TODO add models
     #TODO ? add recent forms ?
-    return render(request, 'dashboard.html', {"Friend": friend,"sent_request": sent_request})
+    return render(request, 'dashboard.html', context)
     #return render(request, 'dashboard.html', {"from": "coming soon !"})
 
 
@@ -148,7 +214,9 @@ def list_friends(request):
 
 
 def list_FriendRequest(request):
+    context = {}
     sent_request = FriendRequest.objects.filter(viewing_user= request.user.pk)
     if(sent_request.count()):
-        return render(request, 'friend/List_FriendRequest.html', {"Friend": sent_request})
-    return render(request, 'friend/FormFill_FriendRequest.html', {"from": "coming soon !"})
+        context["Friend_Requests"] = sent_request
+    return render(request, 'friend/List_FriendRequest.html', context)
+    #return render(request, 'friend/List_FriendRequest.html', {"Friend": sent_request})

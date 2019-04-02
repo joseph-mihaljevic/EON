@@ -5,20 +5,45 @@
 
 {% block content %}
 
-<p>Account: {{ Prof.username }}</p>
-<p>Name : {{Prof.name}}</p>
+
+<h><b>{{ Prof.user_pk }}'s Profile</b></h>
+<br />
 <img src="{{Prof.pic}}" width="150" height="100">
+<hr>
+<br />
 
 
-<p>Email: {{Prof.email}}</p>
-<p>Biography: {{Prof.bio}}</p>
-<p>Affiliation:{{Prof.affiliation}}</p>
+{% if User_Prof %}
+{% if messages %}
+Message:
+  <ul class="messages">
+      {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><font color="red">{{ message }}</font></li>
+      {% endfor %}
+  </ul>
+{% endif %}
 
-<p></p>
-
-{% if User.pk == Prof.user_pk %}
-<p> <a href="{% url 'edit_UserInfo' user.pk%}">Edit</a></p>
+Change:
+  <small>( <a href="{% url 'change_UserName'%}"> UserName</a> / <a href="{% url 'change_UserPassword'%}"> Password</a>)</small>
+  <br /><br />
 {% else %}
 {% endif %}
 
+<h><b>About  {{ Prof.user_pk }}:</b></h>
+{% if User_Prof %}<small>(<a href="{% url 'edit_UserInfo' user.pk%}">Edit</a>)</small>{% else %}{% endif %}
+<hr>
+<p>Name : {{Prof.name}}</p>
+<p>Email: {{Prof.email}}</p>
+<p>Biography: {{Prof.bio}}</p>
+<p>Affiliation: {{Prof.affiliation}}</p>
+
+<br />
+<h><b>{{ Prof.user_pk }}'s Groups</b></h>
+<hr>
+
+
+
+<br />
+<h><b>{{ Prof.user_pk }}'s Models</b></h>
+<hr>
 {% endblock %}

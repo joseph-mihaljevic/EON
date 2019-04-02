@@ -24,52 +24,84 @@
 
 <h1>Welcome to your Dashboard</h1>
 
+
+
 <section>
-    <h2>My Models</h2>
-    <hr>
-    {% include 'model/UserModels_list.html'%}
+  <br />
+  <br />
+  <h><b>My Models</b></h>
+  {% include 'model/UserModels_list.html'%}
+  <!--<button style="font-size:30px;cursor:pointer" onclick="openNav()">Epic First Model</button> -->
 
-
-
-    <button style="font-size:30px;cursor:pointer" onclick="openNav()">Epic First Model</button>
-
-
-    <script>
-    function openNav() {
-      document.getElementById("mySidenav").style.width = "250px";
-    }
-    function closeNav() {
-      document.getElementById("mySidenav").style.width = "0";
-    }
-    </script>
-
+  <script>
+  function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+  }
+  function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+  }
+  </script>
+  <hr>
 </section>
-<hr>
+
+
 
 <section>
-  <h2>Friends</h2>
+  <br />
+  <br />
+  <h><b>Friends</b></h>
+  <hr>
 </section>
-<hr>
+
 
 <section>
-  <h2>Friend Requests</h2>
+  <br />
+  <br />
+  <h><b>Friend Requests</b></h>
   {% for request in Friend %}
     <div>
       {{ request.user }} <a href="{% url 'change_friendship' 'accept' request.user.pk%}"> Accept</a>/<a href="{% url 'change_friendship' 'reject' request.pk%}"> decline</a>
     </div>
   {% endfor%}
+  <hr>
 </section>
-<hr>
+
 
 
 
 <section>
-  <h2>Groups</h2>
+  <br />
+  <br />
+  <h><b>Your Groups</b></h>
+  <small>(<a href="{% url 'create_group'%}">Create Group</a>)</small>
+  <br />
+  <hr>
+  {% if Groups %}
+    {% for Group in Groups %}
+      <div>
+        <p>{{ Group.name }}  <a href="{% url 'view-group' Group.name%}">View</a></p><!-- <a href="{% url 'Manage_Recruits' Group.name 'Remove' user.pk%}">Leave</a>  -->
+      </div>
+    {% endfor%}
+  {% else %}
+      <p> You have no Groups matched your account.</p>
+  {% endif %}
+  <hr>
 </section>
-<hr>
+
 
 <section>
-  <h2>GroupInvites</h2>
+  <br />
+  <br />
+  <h><b>Group invites:</b></h>
+  <hr>
+  {% if GroupInvites %}
+    {% for Invite in GroupInvites %}
+      <p> {{Invite.group_member}} Invited you to their group: {{Invite.group}} <a href="{% url 'Manage_Recruits' Invite.group.name 'Accept_Invite' user.pk%}">Accept</a> / <a href="#">Decline</a></p>
+    {% endfor%}
+
+  {% else %}
+    <p> You have no Group Invites matched your account.</p>
+  {% endif %}
 </section>
 <hr>
 
