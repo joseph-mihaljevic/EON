@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Forum, Thread, Comment
+from .models import Forum, Thread, Comment, Reply
 
 class ForumCreationForm(forms.ModelForm):
 
@@ -19,3 +19,9 @@ class CommentCreationForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('content',)
+
+class ReplyCreationForm(forms.ModelForm):
+
+    class Meta:
+        model = Reply
+        fields = ('content','parent_comment', 'child_comment')

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Forum,Thread,Comment
+from .models import Forum,Thread,Comment,Reply
 # Register your models here.
 
 class ForumAdmin(admin.ModelAdmin):
@@ -14,3 +14,4 @@ class CommentAdmin(admin.ModelAdmin):
 admin.site.register(Comment,CommentAdmin)
 admin.site.register(Thread,ThreadAdmin)
 admin.site.register(Forum,ForumAdmin)
+admin.site.register(Reply)

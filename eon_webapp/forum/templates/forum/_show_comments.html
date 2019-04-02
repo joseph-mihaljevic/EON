@@ -1,0 +1,50 @@
+{% load forum_extras %}
+
+{% if comments %}
+<ul style="list-style: none; padding-left: 0;">
+  {% for comment in comments %}
+
+    <li style=" border: 2px #000 solid; margin-top: 20px; padding: 10px;">
+      Posted by: {{comment.attributes.poster}}<br>
+      Created at: {{comment.attributes.date}}<br><br>
+      {{comment.attributes.content}}<br><br>
+
+      <form method="POST" action="">
+        {% csrf_token %}
+          {{comment.form.non_field_errors}}
+          {{comment.form.content}}
+          <input type="hidden" name="parent_comment" value="{{ comment.attributes.id}}">
+        <div class="col-sm">
+          <input type="submit" name="submit_type" value="Reply">
+        </div><br>
+      </form>
+
+    {% if comment.replies %}
+
+      {% for reply in comment.replies %}
+      <div style="border: 2px solid #262626; margin: 10px 5px; padding: 10px 10px 10px 20px;">
+        Posted by: {{reply.attributes.poster}}<br>
+        Created at: {{reply.attributes.date}}<br><br>
+        {{reply.attributes.content}}<br><br>
+
+        <form method="POST" action="">
+          {% csrf_token %}
+            {{reply.form.non_field_errors}}
+            {{reply.form.content}}
+            <input type="hidden" name="parent_comment" value="{{ reply.attributes.id }}">
+          <div class="col-sm">
+            <input type="submit" name="submit_type" value="Reply">
+          </div><br>
+        </form>
+
+
+        {% show_replies reply.attributes %}
+        </div>
+      {% endfor %}
+    {% endif %}
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+  <p>There are no comments on this post.</p>
+{% endif %}

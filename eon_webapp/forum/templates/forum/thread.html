@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load forum_extras %}
+{% block title %}Forum View{% endblock %}
+
+{% block content %}
+<div class="col-sm">
+  <h3>Thread Name: {{thread.thread_name}}</h3>
+  <p>Author: {{thread.poster}}</p>
+  <p>Posted at: {{ thread.date }}</p>
+</div>
+<div class="col-sm">
+  {{thread.description}}
+</div><br>
+{% show_comments thread %}
+<br>
+<form method="POST" action="">
+  {% csrf_token %}
+  <!-- <textarea name="content" rows="8" cols="80"> -->
+    {{form.content}}
+    {{form.non_field_errors}}
+  <!-- </textarea> -->
+  <div class="col-sm">
+    <input type="submit" name="submit_type" value="Comment">
+  </div><br>
+</form>
+<!-- <a href="/forum/view/thread/{{thread.id}}/comment"><button type="submit">Add Comment</button></a> -->
+{% endblock %}

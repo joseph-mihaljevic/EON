@@ -1,11 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views import generic
-from .models import Forum, Thread, Comment
-from .forms import ForumCreationForm, PostCreationForm, CommentCreationForm
-
+from .models import Forum, Thread, Comment, Reply
+from .forms import ForumCreationForm, PostCreationForm, CommentCreationForm, ReplyCreationForm
 
 class Index(generic.ListView):
     model = Forum
@@ -23,7 +22,7 @@ class CreateForum(generic.CreateView):
 
 class CreatePost(generic.CreateView):
     form_class = PostCreationForm
-    success_url = reverse_lazy('forum_index')
+    # success_url = reverse_lazy('forum_index')
     template_name = 'forum/create_post.html'
 
     def form_valid(self, form):
@@ -31,18 +30,29 @@ class CreatePost(generic.CreateView):
         form.instance.poster = self.request.user
         return super(CreatePost, self).form_valid(form)
 
-class CreateComment(generic.CreateView):
-    form_class = CommentCreationForm
-    model = Comment
-    template_name = 'forum/create_comment.html'
+    def get_success_url(self):
+        return reverse_lazy('forum_view', kwargs={'in_id': self.kwargs['forum_id']}) 
 
-    def form_valid(self, form):
-        # form.instance.comment = Comment.objects.get(id=self.kwargs['thread_id'])
-        form.instance.poster = self.request.user
-        form.instance.thread = Thread.objects.get(id=self.kwargs['thread_id'])
-        self.success_url = reverse_lazy('thread_view',kwargs={"thread_id": self.kwargs['thread_id']})
-
-        return super(CreateComment, self).form_valid(form)
+# class CreateComment(generic.CreateView):
+#     form_class = CommentCreationForm
+#     model = Comment
+#
+#     # def get_object(self,**kwargs):
+#     #     pk_ = self.kwargs.get("id")
+#     #     return get_object_or_404(Thread,pk = pk_)
+#     #
+#     # def get_context_data(self, **kwargs):
+#     #     thread = self.object
+#     #     comments = Comment.objects.filter(thread = thread)
+#     #     context ={ "thread":thread,"comments":comments }
+#
+#     def form_valid(self, form):
+#         # form.instance.comment = Comment.objects.get(id=self.kwargs['thread_id'])
+#         form.instance.poster = self.request.user
+#         form.instance.thread = Thread.objects.get(id=self.kwargs['thread_id'])
+#         self.success_url = reverse_lazy('thread_view',kwargs={"thread_id": self.kwargs['thread_id']})
+#
+#         return super(CreateComment, self).form_valid(form)
 
 def ViewForum(request,in_id):
     forum = Forum.objects.get(id=int(in_id))
@@ -51,5 +61,37 @@ def ViewForum(request,in_id):
 
 def ViewThread(request,thread_id):
     thread = Thread.objects.get(id=int(thread_id))
-    comments = Comment.objects.filter(thread = thread)
-    return render(request, 'forum/thread.html', {"thread":thread,"comments":comments})
+
+    if request.method == 'POST':
+        print(request.POST)
+        if request.POST and len(request.POST) > 0:
+            form = None
+            if request.POST['submit_type'] == "Comment":
+                form = CommentCreationForm(request.POST)
+            elif request.POST['submit_type'] == "Reply":
+                form = ReplyCreationForm(request.POST)
+
+            if form is not None:
+                form.instance.poster = request.user
+                form.instance.thread = Thread.objects.get(id=thread_id)
+
+                if form.is_valid():
+                    new_thing = form.save()
+
+                    if isinstance(new_thing, Reply):
+                        try:
+                            parent_comment = Reply.objects.get(id=form.instance.parent_comment.pk)
+                            new_entry = Reply(parent_comment=parent_comment)
+                            if isinstance(new_thing, Comment):
+                                new_entry.child_comment = new_thing
+                            else:
+                                new_entry.child_comment = new_thing.pk
+                            print(new_entry, new_entry.child_comment, new_entry.parent_comment)
+                            # new_entry.save()
+                        except:
+                            pass
+                    return redirect("thread_view", thread_id=thread.id)
+    else:
+        form = CommentCreationForm()
+
+    return render(request, 'forum/thread.html', {"form": form, "thread":thread})
