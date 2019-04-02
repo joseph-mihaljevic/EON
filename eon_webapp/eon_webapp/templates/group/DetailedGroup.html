@@ -15,8 +15,10 @@
   <dt>About: {{Group.about}}</dt>
   <!--<dt>Created on: NA</dt> -->
 
-  <dt>Admin:  <a href="#"> view </a> </dt>
   <!-- <dt>EONID:{{UserModel.EONid}}</dt> -->
+  {% if Edit_Privlege %}
+      <small><a href="{% url 'Edit_Group' Group.name %}"> Edit Member Privleges </a></small>
+  {% endif %}
 </dl>
 
 Members:

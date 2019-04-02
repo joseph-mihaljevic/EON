@@ -8,6 +8,8 @@ urlpatterns = [
 
     path('<slug:username>', views.view_user,name='display_UserInfo'),
     path('edit/<int:pk>', views.UpdateProfile.as_view(),name='edit_UserInfo'),
+    url(r'^password/$', views.change_password, name='change_UserPassword'),
+    url(r'^username/$', views.change_username, name='change_UserName'),
     path('dashboard/', views.view_Dashboard,name='dashboard'),
 
     path(r'search/', views.searchUsers_Form,name='search_users'),

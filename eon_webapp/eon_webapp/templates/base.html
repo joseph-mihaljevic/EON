@@ -83,7 +83,7 @@ hr {
 <div class="dropdown">
   <button class="dropbtn">Welcome {{ user.username }}!</button>
   <div class="dropdown-content">
-    <a href="{% url 'display_UserInfo' user.username%}">Home</a>
+    <a href="{% url 'display_UserInfo' user.username%}">Profile</a>
     <a href="{% url 'dashboard' %}">Dashboard</a>
     <a href="{% url 'friends' %}">Friends</a>
     <a href="{% url 'search_users' %}">Search Users</a>
@@ -107,6 +107,8 @@ hr {
     <a href="{% url 'search_users' %}">Users</a>
     <a href="{% url 'forum_index' %}">Forums</a>
     <a href="{% url 'model_index' %}">Models</a>
+    <a href="{% url 'AllGroups' %}">Groups</a>
+
 
   </div>
   <div class="main">

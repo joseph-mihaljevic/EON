@@ -4,14 +4,26 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+  <h><b>All Groups</b></h>
+  {% if user.is_authenticated %} <small>(<a href="{% url 'create_group'%}">Create Group</a>)</small> {% endif %}
+  <br />
+  <hr>
 
-  {% if user.is_authenticated %}
+    <form action="/user/search/Results/" method="get">
+      <h>Search Groups</h>
+      <small>
+        <input type="text" name="q">
+        <input type="submit" value="Search">
+      </small>
+    </form>
 
-  <p><a href="{% url 'create_group'%}">Create Group</a></p>
 
-  Groups:
+
+  <br /> <br />
+  <h><b>Popular Groups</b></h>
+  <br />
+  <hr>
   {% if Groups %}
-
     {% for Group in Groups %}
     <hr>
       <div>
@@ -20,25 +32,13 @@
       </div>
     {% endfor%}
   {% else %}
-      <p> you have no Groups matched your account.</p>
+      <p> There are currently no groups found on the platform.</p>
   {% endif %}
 
 
 
-    Group invites:
-  {% if GroupInvites %}
-    {% for Invite in GroupInvites %}
-      <p> {{Invite.group_member}} Invited you to their group: {{Invite.group}} <a href="{% url 'Manage_Recruits' Invite.group.name 'Accept_Invite' user.pk%}">Accept</a> / <a href="#">Decline</a></p>
-    {% endfor%}
 
-  {% else %}
-    <p> you have no Groups matched your account.</p>
-  {% endif %}
 
-  <p><a href="{% url 'logout' %}">logout</a></p>
-{% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
-{% endif %}
+
 
 {% endblock %}
