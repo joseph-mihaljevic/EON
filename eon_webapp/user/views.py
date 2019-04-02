@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from .models import Friend,FriendRequest,Profile
 from user.forms import ChangeUserNameForm
 from django.contrib import messages
-
+from group.models import Group,GroupMember,JoinGroupRequest,GroupInvite
 #for my testing
 from django.http import HttpResponse
 
@@ -24,6 +24,7 @@ class Dashboard(generic.CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'dashboard.html'
+
 
 def change_password(request):
     if request.method == 'POST':
@@ -84,13 +85,15 @@ def change_username(request):
 
 
 def view_Dashboard(request):
-    friend = Friend.objects.filter(viewing_user =request.user.pk)
-    sent_request = FriendRequest.objects.filter(viewing_user= request.user.pk)
-    messages.success(request, 'Dashboard still being worked on !')
+    context = {}
+    context['Friend'] = Friend.objects.filter(viewing_user =request.user.pk)
+    context['FriendRequest'] = FriendRequest.objects.filter(viewing_user= request.user.pk)
+    context['Groups'] = GroupMember.Get_UserGroups(request.user.pk)
+    #messages.success(request, 'Dashboard still being worked on !')
     #return redirect('dashboard')
     #TODO add models
     #TODO ? add recent forms ?
-    return render(request, 'dashboard.html', {"Friend": friend,"sent_request": sent_request})
+    return render(request, 'dashboard.html', context)
     #return render(request, 'dashboard.html', {"from": "coming soon !"})
 
 
@@ -211,7 +214,9 @@ def list_friends(request):
 
 
 def list_FriendRequest(request):
+    context = {}
     sent_request = FriendRequest.objects.filter(viewing_user= request.user.pk)
     if(sent_request.count()):
-        return render(request, 'friend/List_FriendRequest.html', {"Friend": sent_request})
-    return render(request, 'friend/FormFill_FriendRequest.html', {"from": "coming soon !"})
+        context["Friend_Requests"] = sent_request
+    return render(request, 'friend/List_FriendRequest.html', context)
+    #return render(request, 'friend/List_FriendRequest.html', {"Friend": sent_request})

@@ -41,21 +41,48 @@ class Group(models.Model):
             name = name,
             about = about
         )
-        print(Group.pk)
+        #print(Group.pk)
         Group.save()
         #GroupMember.addAdmin(Group = group, user = user)
         #GroupMember.addUser(Group = group, user = user)
         GroupMember.addAdmin(Group,user)
         #group.set()
+    @classmethod
+    def changePrivacyPreference(cls, name, Private):
+        print("calling get_or_create")
+        Editing_Group = Group.objects.get(name = name)
+
+        Editing_Group.Private = Private
+        Editing_Group.save()
+        return True
+
+    def changeEditablePreference(cls, group, Editable):
+        print("calling get_or_create")
+        Editing_Group, created = cls.objects.get(name = name)
+        Editing_Group.Editable = Editable
+        Editing_Group.save()
+        return True
     def get_absolute_url(self):
         #return reverse('model_index')
         return reverse('view-group', kwargs={'groupname':self.name})
+
+
+
 
 class GroupMember(models.Model):
     user  = models.ForeignKey(User,null=True, on_delete=models.CASCADE)
     group = models.ManyToManyField(Group)
     admin = models.BooleanField(default=False)
     role  = models.PositiveSmallIntegerField(choices = USER_PRIVILEGES_CHOICES)
+    @classmethod
+    def Get_UserGroups(cls, userPK):
+        User_GroupMember = GroupMember.objects.filter(user = userPK)
+
+        UsersGroups = [Membership.group.all()[0] for Membership in User_GroupMember]
+        return UsersGroups
+
+
+
     @classmethod
     def UserHas_Manage_Privlege(cls, userPK,group):
         GroupMembers = cls.objects.filter(

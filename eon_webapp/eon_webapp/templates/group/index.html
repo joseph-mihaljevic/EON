@@ -25,16 +25,14 @@
   <hr>
   {% if Groups %}
     {% for Group in Groups %}
-    <hr>
       <div>
         <p>{{ Group.name }}  <a href="{% url 'view-group' Group.name%}">View</a></p><!-- <a href="{% url 'Manage_Recruits' Group.name 'Remove' user.pk%}">Leave</a>  -->
-          <hr>
       </div>
     {% endfor%}
   {% else %}
       <p> There are currently no groups found on the platform.</p>
   {% endif %}
-
+    <hr>
 
 
 

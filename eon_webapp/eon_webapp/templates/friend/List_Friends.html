@@ -6,21 +6,24 @@
 {% block content %}
 
   {% if user.is_authenticated %}
-  <p><a href="{% url 'list_FriendRequest' %}">list_FriendRequests</a></p>
-  Friends:
-  {% for acc in Friend %}
-    <div>
-      {{ acc.user }}
-    </div>
-  {% endfor%}
+  <h><b>Friends:</b></h>
+  <hr>
+  {% if Friend_Requests %}
+    {% for acc in Friend %}
+      <div>
+        {{ acc.user }}
+      </div>
+      {% endfor%}
+    {% else %}
+        <p> No Friends Found.</p>
+    {% endif %}
+  <hr>
+  <p><a href="{% url 'list_FriendRequest' %}">View Friend Requests</a></p>
 
 
-
-
-  <p><a href="{% url 'logout' %}">logout</a></p>
-{% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
-{% endif %}
+  {% else %}
+    <p>You are not logged in</p>
+    <a href="{% url 'login' %}">login</a>
+  {% endif %}
 
 {% endblock %}

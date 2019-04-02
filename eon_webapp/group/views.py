@@ -94,7 +94,8 @@ def list_groups(request):
 
 def List_UsersGroups(request):
     context = {}
-    context['Groups'] =  GroupMember.objects.filter(user = request.user)
+
+    context['Groups'] = GroupMember.Get_UserGroups(request.user.pk)
     context['GroupInvites'] = GroupInvite.objects.filter(invite_user = request.user)
 
     return render(request, "group/List_UsersGroups.html", context)
@@ -268,6 +269,7 @@ def Manage_Members(request,groupname):
         #GroupMember.objects.filter(group=viewing_group.pk)
         return render(request, 'group/Manage_Members.html',context)
     return render(request, '404.html',{"Message": "Group Not Found!"})
+
 
 
 def Manage_Privlege(request,groupname,operation,User_pk):
