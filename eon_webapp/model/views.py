@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy,reverse
 from django.views import generic
 from django.shortcuts import redirect
 from django.views.generic.edit import CreateView,UpdateView,DeleteView,FormView
@@ -44,6 +44,8 @@ class CreateUserModel(CreateView):
     model = UserModel
     fields = ['model_name','description','code_language','executable_file_name']
     template_name = 'model/UserModel_Create.html'
+    def get_success_url(self):
+        return reverse('view_user_model', args=(self.object.id,))
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         data["text_fields"]=['model_name','description','executable_file_name']
@@ -81,47 +83,47 @@ class CreateUserModel(CreateView):
     #context_object_name = "UserModel"
 
 
-
-class GraphSpecifyDetailedUserModel(generic.DetailView):
-    model = UserModel
-    context_object_name = "UserModel" #use this in the template
-    template_name = 'model/Display_UserModel.html'
-    def get_queryset(self):
-        return UserModel.objects.all()
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        data["url_path"] = "/model/UpdateGraphJson/"+str(data["UserModel"].id)
-        data["owner_name"] = User.objects.get(pk=data["UserModel"].owner_id).username
-        data['form']=GraphSpecifyForm(data["UserModel"])
-        # TODO: CHANGE THIS TO LOGGING
-        # runs the code in firejail within the directory
-        print("RUNNING CODE")
-        if os.path.exists(data["UserModel"].folder_location+"/output.csv"):
-            os.remove(data["UserModel"].folder_location+"/output.csv")
-        json_location = "%s/specification.json"%folder_location
-        with open(json_location, 'r') as json_f:
-            specification_dict = json.load(json_f)
-        default_params=[param for param,key in enumerate(specification_dict["parameter_defaults"])]
-        run_command=["firejail","--private="+data["UserModel"].folder_location,"./"+data["UserModel"].executable_file_name]
-        run_command+=params
-        subprocess.run(run_command)
-        # output is now in output.csv (should be anyway...)
-        # TODO: catch error if output.csv doesn't exist
-        with open(data["UserModel"].folder_location+"/output.csv") as output_file:
-            output = output_file.readlines()
-        output = [x.strip() for x in output]
-        header = output[0].split(",")
-        # data_dict = {}
-        # for head in header:
-        #     data_dict[head]=[]
-        # for line in output[1:]:
-        #     line_contents=line.split(",")
-        #     for index,head in enumerate(header):
-        #         data_dict[head].append(line_contents[index])
-        # data["col1"]=data_dict[header[0]]
-        # data["col2"]=data_dict[header[1]]
-        data["output"]=output
-        return data
+# TODO: REMOVE ONCE IT IS COMPLETELY DEPRECATED
+# class GraphSpecifyDetailedUserModel(generic.DetailView):
+#     model = UserModel
+#     context_object_name = "UserModel" #use this in the template
+#     template_name = 'model/Display_UserModel.html'
+#     def get_queryset(self):
+#         return UserModel.objects.all()
+#     def get_context_data(self, **kwargs):
+#         data = super().get_context_data(**kwargs)
+#         data["url_path"] = "/model/UpdateGraphJson/"+str(data["UserModel"].id)
+#         data["owner_name"] = User.objects.get(pk=data["UserModel"].owner_id).username
+#         data['form']=GraphSpecifyForm(data["UserModel"])
+#         # TODO: CHANGE THIS TO LOGGING
+#         # runs the code in firejail within the directory
+#         print("RUNNING CODE")
+#         if os.path.exists(data["UserModel"].folder_location+"/output.csv"):
+#             os.remove(data["UserModel"].folder_location+"/output.csv")
+#         json_location = "%s/specification.json"%folder_location
+#         with open(json_location, 'r') as json_f:
+#             specification_dict = json.load(json_f)
+#         default_params=[param for param,key in enumerate(specification_dict["parameter_defaults"])]
+#         run_command=["firejail","--private="+data["UserModel"].folder_location,"./"+data["UserModel"].executable_file_name]
+#         run_command+=params
+#         subprocess.run(run_command)
+#         # output is now in output.csv (should be anyway...)
+#         # TODO: catch error if output.csv doesn't exist
+#         with open(data["UserModel"].folder_location+"/output.csv") as output_file:
+#             output = output_file.readlines()
+#         output = [x.strip() for x in output]
+#         header = output[0].split(",")
+#         # data_dict = {}
+#         # for head in header:
+#         #     data_dict[head]=[]
+#         # for line in output[1:]:
+#         #     line_contents=line.split(",")
+#         #     for index,head in enumerate(header):
+#         #         data_dict[head].append(line_contents[index])
+#         # data["col1"]=data_dict[header[0]]
+#         # data["col2"]=data_dict[header[1]]
+#         data["output"]=output
+#         return data
 
 class GraphSpecifyFormView(FormView):
     form_class=GraphSpecifyForm
@@ -187,7 +189,6 @@ def update_graph_json(request,model_id):
                 x_axis=input_field_list[index+1].split("=")[1]
                 y_axis=input_field_list[index+2].split("=")[1]
                 json_dict["graphs"]["graph"]={"x_axis":x_axis,"y_axis":y_axis,"name":input}
-        print(json_dict)
         model=UserModel.objects.get(pk=model_id)
         with open('%s/specification.json'%str(model.folder_location), 'w+') as fp:
             json.dump(json_dict, fp)
@@ -205,11 +206,13 @@ def view_user_model(request,pk):
     json_location = "%s/specification.json"%folder_location
     with open(json_location, 'r') as json_f:
         specification_dict = json.load(json_f)
-    default_params_dict=specification_dict["parameter_defaults"]
-    default_params=[]
-    for i in range(0,len(default_params_dict.keys())):
-        print(i)
-        default_params.append(specification_dict["parameter_defaults"]["param_%i_default"%i])
+    params_list=specification_dict["parameters"]
+    default_params=[param["default"] for param in params_list]
+    run_command = []
+    if int(model.code_language) == 0:
+        run_command = ["firejail","--private="+model.folder_location,"./"+model.executable_file_name]
+    elif int(model.code_language) == 2:
+        run_command = ["Rscript", model.executable_file_name]
     if request.method=='POST':
         params_changed=str(request.body.decode("utf-8")).split('&')[1:]
         params_for_code_list=[]
@@ -220,16 +223,15 @@ def view_user_model(request,pk):
             params_for_code_list.append(param)
         if os.path.exists(model.folder_location+"/output.csv"):
             os.remove(model.folder_location+"/output.csv")
-        run_command=["firejail","--private="+model.folder_location,"./"+model.executable_file_name]
         run_command+=params_for_code_list
-        subprocess.run(run_command)
+        subprocess.run(run_command,cwd=model.folder_location)
     else:
         if os.path.exists(model.folder_location+"/output.csv"):
             os.remove(model.folder_location+"/output.csv")
-        run_command=["firejail","--private="+model.folder_location,"./"+model.executable_file_name]
         run_command+=default_params
         print(run_command)
-        subprocess.run(run_command)
+        print(model.folder_location)
+        subprocess.run(run_command,cwd=model.folder_location)
     folder_location = str(model.folder_location)
     # with open(csv_location, 'r') as csv_f:
     df = pd.read_csv(csv_location)
@@ -242,18 +244,19 @@ def view_user_model(request,pk):
     columns=[]
     for index,row in df.iterrows():
         columns.append([row[x_axis_name],row[y_axis_name]])
-    print(columns)
     context["columns"]=columns
     parameters=[]
     for index,parameter in enumerate(default_params):
-        upper_bound=specification_dict["parameter_bounds"]["param_%i_upper_bound"%index]
-        lower_bound=specification_dict["parameter_bounds"]["param_%i_lower_bound"%index]
+        param_dict = specification_dict["parameters"][index]
+        upper_bound=param_dict["u_bound"]
+        lower_bound=param_dict["l_bound"]
         if upper_bound!=lower_bound:
-            parameters.append({"name":"param_%i"%index,"default":parameter,
+            parameters.append({"name":param_dict["name"],"default":parameter,
             "upper_bound":upper_bound,
             "lower_bound":lower_bound,
             "step":(float(upper_bound)-float(lower_bound))/10000,})
-    context["parameter_bounds"]=parameters
+    context["parameters"]=parameters
+    print(parameters)
     return render(request, 'model/view_user_model.html',context)
 
 def CreateModelViewForm(request):

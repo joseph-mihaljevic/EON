@@ -8,7 +8,7 @@ from forum.models import Thread
 from group.models import Group
 import subprocess
 
-LANGUAGES = ["C","Python"]
+LANGUAGES = ["C","Python","R"]
 LANGUAGE_CHOICES = [(str(i), LANGUAGES[i]) for i in range(len(LANGUAGES))]
 
 def content_file_name(instance, filename):
@@ -52,5 +52,4 @@ def UserModel_post_save(sender, instance, created, *args, **kwargs):
         if int(instance.code_language)==0: # 0=="C" in languages dict
             print("COMPILING C CODE IN: %s\n" %instance.folder_location)
             subprocess.run(["make","-C",instance.folder_location])
-        # your code goes here
 signals.post_save.connect(UserModel_post_save, sender=UserModel)
