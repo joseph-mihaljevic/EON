@@ -9,7 +9,6 @@
 {% block content %}
 
 
-
 <dl>
   <h>Group Name: {{Group.name}}</h>
   <dt>About: {{Group.about}}</dt>
@@ -17,7 +16,7 @@
 
   <!-- <dt>EONID:{{UserModel.EONid}}</dt> -->
   {% if Edit_Privlege %}
-      <small>(<a href="">Settings</a>)</small>
+      <!-- <small>(<a href="">Settings</a>)</small> -->
   {% endif %}
 </dl>
 
@@ -79,7 +78,11 @@ Join Group Requsests:
     <p><a href="{% url 'delete_group' Group.pk %}">Delete Group</a></p>
 
 {% else %}
-  Not a member ? <a href="{% url 'Manage_Recruits' Group.name 'Apply' 0%}"> Apply </a>
+  {%  if user.is_authenticated %}
+    Not a member ? <a href="{% url 'Manage_Recruits' Group.name 'Apply' 0%}"> Apply </a>
+  {% else %}
+  You are not loged in.  Login to apply:<a href="{% url 'login'%}"> Login</a>
+  {% endif %}
 {% endif %}
 
 

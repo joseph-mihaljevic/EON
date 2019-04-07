@@ -10,7 +10,7 @@
     <title>Search Results</title>
 </head>
 <body>
-  <form action="/user/search/Results/" method="get">
+  <form action="/group/search/Results/" method="get">
       <input type="text" value="{{ query }}" name="q">
       <input type="submit" value="Search Again">
   </form>
@@ -19,16 +19,15 @@
 
   <p>You searched for: <strong>{{ query }}</strong></p>
 
-  {% if users %}
-      <p>Found {{ users|length }} users{{ users|pluralize }}.</p>
+  {% if groups %}
+      <p>Found {{ groups|length }} Groups{{ groups|pluralize }}.</p>
       <ul>
-          {% for user in users %}
-          <li>User: {{ user.username }} <a href="{% url 'change_friendship' 'add' user.pk%}"> Add friend </a></li>
-
+          {% for group in groups %}
+          <li>Group: {{ group.name }} <a href="{% url 'view-group' group.name%}"> view </a></li>
           {% endfor %}
       </ul>
   {% else %}
-      <p>No users matched your search criteria.</p>
+      <p>No Groups matched your search criteria.</p>
   {% endif %}
 </body>
 </html>

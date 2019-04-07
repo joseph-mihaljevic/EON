@@ -13,14 +13,14 @@ from django.contrib.auth.models import User
 
 
 def searchGroup_Form(request):
-    return render(request, 'users/searchUsers_Form.html')
+    return render(request, 'group/searchGroup_Form.html')
 
 def searchGroup_Results(request):
     if 'q' in request.GET and request.GET['q']:
         q = request.GET['q']
-        users = group.objects.filter(username__icontains=q)
-        return render(request, 'users/searchUsers_Results.html',
-                      {'users': users, 'query': q})
+        groups = Group.objects.filter(name__contains=q)
+        return render(request, 'group/searchGroup_Results.html',
+                      {'groups': groups, 'query': q})
     else:
         return HttpResponse('Please submit a search term.')
 
@@ -235,11 +235,9 @@ def Manage_Recruits(request,groupname,operation,userPK):
             context["Message"] ="User has been removed from the the group: "+context["Group"]
             return render(request, 'group/GroupMessage_Redirect.html',context)
 
-        if (operation =='add'):
-            if():
                 #user exists+ not in group
                 #add user
-                return render(request, 'group/DetailedGroup.html', context)
+                #return render(request, 'group/DetailedGroup.html', context)
             #otherwise display error
 
             #TODO implement Message Dialog

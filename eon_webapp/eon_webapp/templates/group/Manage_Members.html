@@ -33,20 +33,29 @@
   background-color: #f1f1f1;
 }
 </style>
+<!--
 <small>
   <b>Group Settings:</b>
 </small>
 
 <a class="collapsible">Edit</a>
+-->
+
   <div class="content">
     <small>
       Make group activities:
-      <a href="">  Private </a> /
-      <a href=""> Public </a>
+      <form action="" method="get">
+          <input type="radio" name="Private" value="Private"> Private<br>
+          <input type="radio" name="Private" value="Public"> Public<br>
+          <input type="submit" value="Search">
+      </form>
       <br />
       Make group edits:
-      <a href=""> Private </a> /
-      <a href=""> Public</a>
+      <form action="" method="get">
+          <input type="radio" name="Editable" value="Private"> Private<br>
+          <input type="radio" name="Editable" value="Public"> Public<br>
+          <input type="submit" value="Search">
+      </form>
     </small>
   </div>
 

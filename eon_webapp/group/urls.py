@@ -20,6 +20,10 @@ urlpatterns = [
 
 
     path(r'AllGroups/', views.list_groups, name="AllGroups"),
+
+    path(r'search/', views.searchGroup_Form,name='search_Groups'),
+    path(r'search/Results/', views.searchGroup_Results),
+
     path(r'MyGroups/', views.List_UsersGroups, name="MyGroups"),
     #path(r'MyGroups/', views.list_groups, name="MyGroups"),
 

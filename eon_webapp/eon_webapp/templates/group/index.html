@@ -5,11 +5,11 @@
 
 {% block content %}
   <h><b>All Groups</b></h>
-  {% if user.is_authenticated %} <small>(<a href="{% url 'create_group'%}">Create Group</a>)</small> {% endif %}
+  {% if user.is_authenticated %} <small>(<a href="{% url 'create_group'%}">Create Group</a>)</small>
   <br />
   <hr>
 
-    <form action="/user/search/Results/" method="get">
+    <form action="/group/search/Results/" method="get">
       <h>Search Groups</h>
       <small>
         <input type="text" name="q">
@@ -34,7 +34,16 @@
   {% endif %}
     <hr>
 
-
+{% else %}
+<p>PleaseLogin.</p>
+<form action="/group/search/Results/" method="get">
+  <h>Search Groups</h>
+  <small>
+    <input type="text" name="q">
+    <input type="submit" value="Search">
+  </small>
+</form>
+{% endif %}
 
 
 
