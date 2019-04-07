@@ -15,7 +15,7 @@ USER_PRIVILEGES_CHOICES = (
 class Group(models.Model):
     #group_id = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
-    about = models.CharField(max_length=100, null=True)
+    about = models.CharField(max_length=500, null=True)
     # These values denote the access of
     Private = models.BooleanField(default=False)
     Editable = models.BooleanField(default=False)
