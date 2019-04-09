@@ -30,6 +30,7 @@
   <br />
   <br />
   <h><b>My Models</b></h>
+      <hr>
   {% include 'model/UserModels_list.html'%}
   <!--<button style="font-size:30px;cursor:pointer" onclick="openNav()">Epic First Model</button> -->
 
@@ -41,7 +42,7 @@
     document.getElementById("mySidenav").style.width = "0";
   }
   </script>
-  <hr>
+
 </section>
 
 
@@ -51,6 +52,15 @@
   <br />
   <h><b>Friends</b></h>
   <hr>
+  {% if Friend %}
+    {% for acc in Friend %}
+      <div>
+        {{ acc.user }}
+      </div>
+      {% endfor%}
+    {% else %}
+        <p> No Friends Found.</p>
+    {% endif %}
 </section>
 
 
@@ -58,12 +68,16 @@
   <br />
   <br />
   <h><b>Friend Requests</b></h>
-  {% for request in Friend %}
-    <div>
-      {{ request.user }} <a href="{% url 'change_friendship' 'accept' request.user.pk%}"> Accept</a>/<a href="{% url 'change_friendship' 'reject' request.pk%}"> decline</a>
-    </div>
-  {% endfor%}
-  <hr>
+    <hr>
+    {% if Friend_Requests %}
+      {% for request in Friend_Requests %}
+        <div>
+          {{ request.user }} <a href="{% url 'change_friendship' 'accept' request.user.pk%}"> Accept</a>/<a href="{% url 'change_friendship' 'reject' request.pk%}"> decline</a>
+        </div>
+      {% endfor%}
+    {% else %}
+        <p> You have no New Friend Requsets matched your account.</p>
+    {% endif %}
 </section>
 
 

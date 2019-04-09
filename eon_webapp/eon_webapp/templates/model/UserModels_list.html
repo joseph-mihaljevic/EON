@@ -9,7 +9,7 @@ hr {
   border-width: 1px;
 }
 </style>
-
+{% if UserModels %}
 {% for Model in UserModels %}
   <div class="d">
     <label class="control-label col-sm-2">{{Model.model_name}} </label>
@@ -20,3 +20,6 @@ hr {
     <hr>
   </div>
 {% endfor%}
+{% else %}
+  <p>No Models Found !</p>
+{% endif %}

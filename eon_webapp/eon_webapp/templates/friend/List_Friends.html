@@ -8,7 +8,7 @@
   {% if user.is_authenticated %}
   <h><b>Friends:</b></h>
   <hr>
-  {% if Friend_Requests %}
+  {% if Friend %}
     {% for acc in Friend %}
       <div>
         {{ acc.user }}

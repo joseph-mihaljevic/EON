@@ -146,8 +146,10 @@ class UpdateProfile(UpdateView):
 
 def change_friendship(request,operation,friends_pk):
     changing_friend = User.objects.get(pk=friends_pk)
-    print(changing_friend)
-    print(changing_friend.pk)
+    #print(changing_friend)
+    if not request.user.is_authenticated:
+        return render(request, '404.html',{"Message": "You cannot make a friend request you are currently not loged in!"})
+        #return render(request, 'friend/FormFill_FriendRequest.html', {"from": "You are currently not loged in!"})
     if(request.user.pk == friends_pk):
         if operation =='reject':
             #Friend.make_friend(request.user,changing_friend)
