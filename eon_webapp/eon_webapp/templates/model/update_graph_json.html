@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% block javascripts %}
+
+{% endblock %}
+{% block content %}
+<script type="text/javascript">
+counter=1;
+function add_param_block() {
+  container = document.getElementById("param-specification");
+  container.appendChild(document.createElement("hr"));
+  let param_id="param"+counter.toString();
+  let param_field_names=["name","default","max","min"];
+  for (field_name in param_field_names) {
+    form_group_div = document.createElement("div");
+    if(param_field_names[field_name]=="min" || param_field_names[field_name]=="max"){
+      form_group_div.style.display="none";
+    }
+    form_group_div.id=param_id+"_div_"+param_field_names[field_name];
+    form_group_div.className="form-group";
+
+    css_div = document.createElement("div");
+    css_div.className="col-sm-offset-2 col-sm-10";
+
+    warning_span=document.createElement("span");
+    warning_span.className="text-danger small";
+    css_div.appendChild(warning_span);
+
+    field_label_container=document.createElement("label");
+    field_label_container.className="control-label col-sm-2";
+
+    field_label=document.createElement("label");
+    field_label.innerHTML="Param "+param_field_names[field_name]+":";
+    field_label.htmlFor="id_"+param_id+"_"+param_field_names[field_name];
+    field_label_container.appendChild(field_label);
+
+    field_container_div=document.createElement("div");
+    field_container_div.className="col-sm-10";
+
+    field=document.createElement("input");
+    field.id="id_"+param_id+"_"+param_field_names[field_name];
+    if(param_field_names[field_name]=="name"){
+      field.type="text"
+    }
+    else {
+      field.type="number";
+    }
+    field.name=param_id+"_"+param_field_names[field_name];
+    field.step="any";
+    field_container_div.appendChild(field);
+
+    form_group_div.appendChild(css_div)
+    form_group_div.appendChild(field_label);
+    form_group_div.appendChild(field_container_div);
+
+    container.appendChild(form_group_div);
+  }
+  let modifiable_checkbox=document.createElement("input");
+  modifiable_checkbox.type="checkbox";
+  modifiable_checkbox.id="checkbox_"+param_id;
+  modifiable_checkbox.addEventListener('change', (event) => {
+    let checkbox=document.getElementById("checkbox_"+param_id);
+    let display="";
+    if(checkbox.checked==true){
+      display="block";
+    }
+    else {
+      display="none";
+    }
+    let min_container=document.getElementById(param_id+"_div_min")
+    let max_container=document.getElementById(param_id+"_div_max")
+    min_container.style.display=display;
+    max_container.style.display=display;
+  });
+  container.appendChild(modifiable_checkbox);
+  counter++;
+}
+</script>
+<h2>Graph Specification</h2>
+<form action="{{ url_path }}" method="post" class="form-horizontal" enctype="multipart/model-data" >
+    {% csrf_token %}
+    {% for field in form %}
+    {% if 'Param' not in field.label_tag %}
+    <div class="from-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <span class="text-danger small">{{field.error}}</span>
+      </div>
+      <label class="control-label col-sm-2">{{field.label_tag}}</label>
+      <div class="col-sm-10">{{field}}</div>
+    </div>
+    {% endif %}
+    {% endfor%}
+    <br>
+    <h2>Parameters Specification</h2>
+    <p>Be sure to add parameters in the order your model accepts.</p>
+    <button type="button" onclick="add_param_block()">Add parameter</button>
+    <div id="param-specification">
+      {% for field in form %}
+      {% if 'Param' in field.label_tag %}
+      <div class="from-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <span class="text-danger small">{{field.error}}</span>
+        </div>
+        <label class="control-label col-sm-2">{{field.label_tag}}</label>
+        <div class="col-sm-10">{{field}}</div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    <hr>
+    <div class="form-group">
+      <div>
+        <button type="Submit">Submit</button>
+      </div>
+
+    </div>
+
+</form>
+{% endblock %}

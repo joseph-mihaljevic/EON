@@ -4,7 +4,7 @@ from django.urls import reverse_lazy,reverse
 from django.views import generic
 from django.shortcuts import redirect
 from django.views.generic.edit import CreateView,UpdateView,DeleteView,FormView
-from .forms import ModelViewForm,GraphSpecifyForm
+from .forms import ModelSpecifyForm
 from .models import UserModel
 from .models import User
 from forum.models import Thread, Forum, Comment
@@ -23,7 +23,6 @@ Make graph page refresh graph only (send data via js request?)
 Allow user to input paramters in a field for each parameter
 Clean up interfaces
 Add group permissions
-
 """
 
 CODE_REPOSITORIES_PATH="/home/joe/EON/eon_webapp/model_code"
@@ -38,14 +37,13 @@ class Index(generic.ListView):
     def get_queryset(self):
         return UserModel.objects.all()
 
-    #def detail(request,):
 
 class CreateUserModel(CreateView):
     model = UserModel
     fields = ['model_name','description','code_language','executable_file_name']
     template_name = 'model/UserModel_Create.html'
     def get_success_url(self):
-        return reverse('view_user_model', args=(self.object.id,))
+        return reverse('update_graph_json', args=(self.object.id,))
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         data["text_fields"]=['model_name','description','executable_file_name']
@@ -66,10 +64,10 @@ class CreateUserModel(CreateView):
         user_model.folder_location=model_folder_location
         # Create folder for user code, then copy the file from memory to folder
         os.mkdir(model_folder_location)
-        specs_json = self.request.FILES["specs_json"]
-        with open(model_folder_location+"/specification.json", 'wb+') as destination:
-            for chunk in specs_json.chunks():
-                destination.write(chunk)
+        # specs_json = self.request.FILES["specs_json"]
+        # with open(model_folder_location+"/specification.json", 'wb+') as destination:
+        #     for chunk in specs_json.chunks():
+        #         destination.write(chunk)
         user_code = self.request.FILES["model_code"]
         with open(model_folder_location+"/zipped_code.zip", 'wb+') as destination:
             for chunk in user_code.chunks():
@@ -125,14 +123,9 @@ class CreateUserModel(CreateView):
 #         data["output"]=output
 #         return data
 
-class GraphSpecifyFormView(FormView):
-    form_class=GraphSpecifyForm
-    success_url=reverse_lazy('model_index')
-    template_name='home.html'
-
 class UpdateUserModel(UpdateView):
     context = {}
-    context["ModelViewForm"] = ModelViewForm()
+    # context["ModelViewForm"] = ModelViewForm()
     model = UserModel
 
     fields = ['model_name','description','executable_file_name']
@@ -175,26 +168,6 @@ class UpdateModelView(UpdateView):
     def get_queryset(self):
         return UserModel.objects.all()
 
-def update_graph_json(request,model_id):
-    if request.method == 'POST':
-        input_field_list = str(request.body.decode("utf-8")).split('&')[1:]
-        json_dict = {}
-        json_dict["parameter_bounds"]={}
-        json_dict["graphs"]={}
-        for index,input_field in enumerate(input_field_list):
-            field,input=input_field.split("=")
-            if "param" in field:
-                json_dict["parameter_bounds"][field]=input
-            if "graph_title" in field:
-                x_axis=input_field_list[index+1].split("=")[1]
-                y_axis=input_field_list[index+2].split("=")[1]
-                json_dict["graphs"]["graph"]={"x_axis":x_axis,"y_axis":y_axis,"name":input}
-        model=UserModel.objects.get(pk=model_id)
-        with open('%s/specification.json'%str(model.folder_location), 'w+') as fp:
-            json.dump(json_dict, fp)
-        print(model.folder_location)
-    return redirect("view_user_model",pk=model_id)
-
 def view_user_model(request,pk):
     model = UserModel.objects.get(pk=pk)
     context={"id":pk,"url_path":"/model/View/%i/"%pk}
@@ -214,24 +187,26 @@ def view_user_model(request,pk):
     elif int(model.code_language) == 2:
         run_command = ["Rscript", model.executable_file_name]
     if request.method=='POST':
-        params_changed=str(request.body.decode("utf-8")).split('&')[1:]
-        params_for_code_list=[]
-        for index,param in enumerate(default_params):
-            for param_changed in params_changed:
-                if str(index) in param_changed.split("=")[0]:
-                    param = param_changed.split("=")[1]
-            params_for_code_list.append(param)
-        if os.path.exists(model.folder_location+"/output.csv"):
-            os.remove(model.folder_location+"/output.csv")
-        run_command+=params_for_code_list
-        subprocess.run(run_command,cwd=model.folder_location)
+        params_changed_str=str(request.body.decode("utf-8")).split('&')[1:]
+        params_changed_dict={}
+        for param_str in params_changed_str:
+            param_list=param_str.replace("slider_","").split("=")
+            params_changed_dict[param_list[0]]=param_list[1] #add changed params to dict with dict[name]=value
+        updated_params=[]
+        for param in params_list:
+            # Update param if it is in the dict of changed params
+            if param["name"] in params_changed_dict:
+                updated_params.append(params_changed_dict[param["name"]])
+            else:
+                updated_params.append(param["default"])
+        print(updated_params)
+        run_command+=updated_params
     else:
-        if os.path.exists(model.folder_location+"/output.csv"):
-            os.remove(model.folder_location+"/output.csv")
         run_command+=default_params
-        print(run_command)
-        print(model.folder_location)
-        subprocess.run(run_command,cwd=model.folder_location)
+    print(run_command)
+    if os.path.exists(model.folder_location+"/output.csv"):
+        os.remove(model.folder_location+"/output.csv")
+    subprocess.run(run_command,cwd=model.folder_location)
     folder_location = str(model.folder_location)
     # with open(csv_location, 'r') as csv_f:
     df = pd.read_csv(csv_location)
@@ -254,33 +229,62 @@ def view_user_model(request,pk):
             parameters.append({"name":param_dict["name"],"default":parameter,
             "upper_bound":upper_bound,
             "lower_bound":lower_bound,
-            "step":(float(upper_bound)-float(lower_bound))/10000,})
+            "step":(float(upper_bound)-float(lower_bound))/100000000,})
     context["parameters"]=parameters
     print(parameters)
     return render(request, 'model/view_user_model.html',context)
 
-def CreateModelViewForm(request):
-    form = ModelViewForm()
+# def CreateModelViewForm(request):
+#     form = ModelViewForm()
+#     if request.method == 'POST':
+#         print("Post")
+#         #form = ModelViewForm(request.POST, request.FILES)
+#         return render(request, 'model/Display_UserModelView.html', {'form': form})
+#     else:
+#         return render(request, 'model/Display_UserModelView.html', {'form': form})
+def update_graph_json(request,model_id):
+    model=UserModel.objects.get(pk=model_id)
+    context = {}
+    print(request)
+    if request.method == 'GET':
+        form = ModelSpecifyForm()
+        context['form']=form
+        context['url_path']="/model/UpdateGraphJson/%i"%model_id
+        return render(request, "model/update_graph_json.html",context)
     if request.method == 'POST':
-        print("Post")
-        #form = ModelViewForm(request.POST, request.FILES)
-        return render(request, 'model/Display_UserModelView.html', {'form': form})
-    else:
-        return render(request, 'model/Display_UserModelView.html', {'form': form})
+        input_field_list = str(request.body.decode("utf-8")).split('&')[1:]
+        print(input_field_list)
+        input_field_dict = {}
+        for input in input_field_list:
+            input_field_dict[input.split("=")[0]]=input.split("=")[1]
+        json_dict = {}
+        json_dict["parameters"]=[]
+        param_ids=[]
+        for input in input_field_list:
+            if "param" in input:
+                param_id=input.split("_")[0]
+                if param_id not in param_ids:
+                    param_ids.append(param_id)
+        for param_id in param_ids:
+            param_dict={}
+            param_dict["name"]=input_field_dict["%s_name"%param_id]
+            param_dict["default"]=input_field_dict["%s_default"%param_id]
+            param_dict["u_bound"]=input_field_dict["%s_max"%param_id]
+            param_dict["l_bound"]=input_field_dict["%s_min"%param_id]
+            if(param_dict["u_bound"]==""or param_dict["l_bound"]==""):
+                param_dict["u_bound"]=param_dict["default"]
+                param_dict["l_bound"]=param_dict["default"]
+            json_dict["parameters"].append(param_dict)
+        json_dict["graphs"]={
+        "graph":{
+        "x_axis":input_field_dict["x_axis"],
+        "y_axis":input_field_dict["y_axis"],
+        "name":"graph"
+        }
+        }
+        print(json_dict)
 
-
-class UpdateModelViewForm(UpdateView):
-    def UpdateModelViewForm(self):
-        return
-
-
-
-
-
-
-
-
-
-
-
-#
+        with open('%s/specification.json'%str(model.folder_location), 'w+') as fp:
+            json.dump(json_dict, fp)
+        print(model.folder_location)
+        return redirect("view_user_model",pk=model_id)

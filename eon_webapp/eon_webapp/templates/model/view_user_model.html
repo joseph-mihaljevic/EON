@@ -8,13 +8,11 @@
 <form method="post" action="{{ url_path }}">
   {% csrf_token %}
   {% for param_dict in parameters %}
-    {% if param_dict.lower_bound != param_dict.upper_bound %}
       <div id='input_container'>
         {{param_dict.name}}
         <input name="slider_{{param_dict.name}}" id="slider_{{param_dict.name}}" step="{{param_dict.step}}" width="400" type="range" min="{{param_dict.lower_bound}}" max="{{param_dict.upper_bound}}" value="{{param_dict.default}}" onchange="show_value(this.value,slider_value_{{param_dict.name}});">
         <span id="slider_value_{{param_dict.name}}" style="color:red;"></span>
       </div>
-    {% endif %}
   {% endfor %}
     <button type="Submit">Submit</button>
 </form>

@@ -11,7 +11,6 @@ urlpatterns = [
     #path(r'Display_UserModel/<int:pk>/CreateModelViewForm/<int::editView>', views.DetailedUserModel.as_view(),name='Display-ModelGraphicalView'),
     path(r'UpdateUserModel/<int:pk>/', views.UpdateUserModel.as_view(),name='Update-UserModel'),
     path(r'DeleteUserModel/<int:pk>/', views.UserModelDelete.as_view(),name='Delete-UserModel'),
-    path(r'SpecifyGraphForm/', views.GraphSpecifyFormView.as_view(), name='graph_specify_form_post'),
     path(r'UpdateGraphJson/<int:model_id>', views.update_graph_json, name='update_graph_json'),
     path(r'View/<int:pk>/', views.view_user_model, name='view_user_model')
 ]
