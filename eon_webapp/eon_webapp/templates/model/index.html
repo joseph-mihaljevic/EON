@@ -8,13 +8,13 @@
 {% if user.is_authenticated %}
 
   {% include 'model/UserModels_list.html'%}
-<a href="{% url 'Create-UserModel' %}">Upload Model</a>
+<a id="upload-model" href="{% url 'Create-UserModel' %}">Upload Model</a>
 {% else %}
   <p>Please login to view your models</p>
   <a href="{% url 'login' %}">login</a>
 {% endif %}
 
-<h2>Popular models</h1>
-  <p>models here</p>
+<!-- <h2>Popular models</h1>
+  <p>models here</p> -->
 
 {% endblock %}

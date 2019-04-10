@@ -10,7 +10,7 @@ function add_param_block() {
   container = document.getElementById("param-specification");
   container.appendChild(document.createElement("hr"));
   let param_id="param"+counter.toString();
-  let param_field_names=["name","default","max","min"];
+  let param_field_names=["name","default","min","max"];
   for (field_name in param_field_names) {
     form_group_div = document.createElement("div");
     if(param_field_names[field_name]=="min" || param_field_names[field_name]=="max"){
@@ -58,6 +58,7 @@ function add_param_block() {
   let modifiable_checkbox=document.createElement("input");
   modifiable_checkbox.type="checkbox";
   modifiable_checkbox.id="checkbox_"+param_id;
+  modifiable_checkbox.name="checkbox_"+param_id;
   modifiable_checkbox.addEventListener('change', (event) => {
     let checkbox=document.getElementById("checkbox_"+param_id);
     let display="";
@@ -73,6 +74,12 @@ function add_param_block() {
     max_container.style.display=display;
   });
   container.appendChild(modifiable_checkbox);
+
+  let checkbox_label=document.createElement("label");
+  checkbox_label.innerHTML="Modifiable?"
+  checkbox_label.htmlFor="checkbox_"+param_id;
+  checkbox_label.className="checkbox_label";
+  container.appendChild(checkbox_label);
   counter++;
 }
 </script>
