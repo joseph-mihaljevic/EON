@@ -20,7 +20,7 @@ class UserModel(models.Model):
     owner = models.ForeignKey(User,on_delete=models.CASCADE)
     code_language = models.CharField(max_length=30, choices=LANGUAGE_CHOICES,default=0)
     folder_location = models.CharField(max_length=128)
-    description = models.CharField(max_length=256)
+    description = models.TextField(max_length=256)
     executable_file_name = models.CharField(max_length=30)
     created_on = models.DateTimeField(auto_now_add=True)
     thread = models.ForeignKey(Thread,on_delete=models.CASCADE)

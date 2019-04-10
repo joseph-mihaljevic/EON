@@ -30,7 +30,7 @@ function add_param_block() {
     field_label_container.className="control-label col-sm-2";
 
     field_label=document.createElement("label");
-    field_label.innerHTML="Param "+param_field_names[field_name]+":";
+    field_label.innerHTML="Param "+counter.toString()+" "+param_field_names[field_name]+":";
     field_label.htmlFor="id_"+param_id+"_"+param_field_names[field_name];
     field_label_container.appendChild(field_label);
 

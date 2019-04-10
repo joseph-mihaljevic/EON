@@ -69,39 +69,39 @@ hr {
 
 </head>
 <body>
-<navbar>
-  <a href="{% url 'home' %}">
-    <img class="logo" src="{% static 'img/logos/Pandemic_Processing_Logo_small.png' %}" alt="EON_logo"/>
-  </a>
-  <div>
-    <a href="{% url 'home' %}">
-      <h1> Epidemiological Modeling Portal </h1>
-    </a>
-    <div id="user_section">
-      {% if user.is_authenticated %}
-
-<div class="dropdown">
-  <button class="dropbtn">Welcome {{ user.username }}!</button>
-  <div class="dropdown-content">
-    <a href="{% url 'display_UserInfo' user.username%}">Profile</a>
-    <a href="{% url 'dashboard' %}">Dashboard</a>
-    <a href="{% url 'friends' %}">Friends</a>
-    <a href="{% url 'search_users' %}">Search Users</a>
-    <a href="{% url 'MyGroups' %}">MyGroups</a>
-
-  </div>
-</div>|
-      <a href="{% url 'logout' %}">logout</a>
-      {% else %}
-      <a href="{% url 'login' %}">login</a> |
-      <a href="{% url 'signup' %}">signup</a>
-
-      {% endif %}
-    </div>
-  </div>
-</navbar>
 
 <div class="container">
+  <navbar>
+    <a href="{% url 'home' %}">
+      <img class="logo" src="{% static 'img/logos/Pandemic_Processing_Logo_small.png' %}" alt="EON_logo"/>
+    </a>
+    <div>
+      <a href="{% url 'home' %}">
+        <h1> Epidemiological Modeling Portal </h1>
+      </a>
+      <div id="user_section">
+        {% if user.is_authenticated %}
+
+  <div class="dropdown">
+    <button class="dropbtn">Welcome {{ user.username }}!</button>
+    <div class="dropdown-content">
+      <a href="{% url 'display_UserInfo' user.username%}">Profile</a>
+      <a href="{% url 'dashboard' %}">Dashboard</a>
+      <a href="{% url 'friends' %}">Friends</a>
+      <a href="{% url 'search_users' %}">Search Users</a>
+      <a href="{% url 'MyGroups' %}">MyGroups</a>
+
+    </div>
+  </div>|
+        <a href="{% url 'logout' %}">logout</a>
+        {% else %}
+        <a href="{% url 'login' %}">login</a> |
+        <a href="{% url 'signup' %}">signup</a>
+
+        {% endif %}
+      </div>
+    </div>
+  </navbar>
   <div class="sidenav">
     <a href="{% url 'home' %}">Home</a>
     <a href="{% url 'search_users' %}">Users</a>
@@ -117,7 +117,7 @@ hr {
   </div>
 </div>
 <footer>
-  <div class="main">
+  <div class="footer">
     <a href="#">About</a>
     <a href="#">Contact</a>
     <a href="#">Sponsors</a>

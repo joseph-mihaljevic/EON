@@ -18,92 +18,19 @@
 {% block content %}
 <header id="home_header">
   <h1>EON</h1>
-  <h2>Cool tag line</h2>
-  <quote>The short description (or shortdesc ) is arguably the most important component of a DITA topic, and is also one of the most difficult elements to write. Short descriptions should be written for every topic. Short descriptions serve multiple purposes within a document.</quote>
+  <h2>What is EON?</h2>
+  <quote>EON is a public repository for pathologen models. EON enables you to upload your own model code, and present your data on a two dimensional graph. Paramters of that data can be modified at your discretion by other users on the site so that others can interact with your model.</quote>
 </header>
-
-<h1>Popular Models:</h1>
-<div id="popular_models" class="gridView modelGrid">
-  <article>
-    <img src="{% static 'img/westnile.jpg' %}" alt="popular model image"/>
-    <h1>West Nile Model</h1>
-  </article>
-
-  <article>
-    <img src="{% static 'img/zika.png' %}" alt="popular model image"/>
-    <h1>Zika Virus Model</h1>
-  </article>
-
-  <article>
-    <img src="{% static 'img/mumps.jpg' %}" alt="popular model image"/>
-    <h1>Mumps Virus Model</h1>
-  </article>
-
-  <article>
-    <img src="{% static 'img/ebola.png' %}" alt="popular model image"/>
-    <h1>Ebola Virus Model</h1>
-  </article>
-
-  <article>
-    <img src="{% static 'img/tube.jpg' %}" alt="popular model image"/>
-    <h1>Tuberculosis Model</h1>
-  </article>
-
-  <article>
-    <img src="{% static 'img/measles.jpg' %}" alt="popular model image"/>
-    <h1>Measles Virus Model</h1>
-  </article>
-
-  <article>
-    <img src="{% static 'img/seasonalflu.png' %}" alt="popular model image"/>
-    <h1>Seasonal Flu Model</h1>
-  </article>
-
-  <article>
-    <img src="{% static 'img/lassa.png' %}" alt="popular model image"/>
-    <h1>Lassa Virus Model</h1>
-  </article>
+<div id="button-container">
+  <a id="upload_model" type="button" href="/model/CreateUserModel/">Upload your first model</a>
 </div>
-  <h1>My Models:</h1>
-  <div id="my_models" class="gridView modelGrid">
-    <article>
-      <img src="{% static 'img/westnile.jpg' %}" alt="popular model image"/>
-      <h1>West Nile Model</h1>
-    </article>
 
-    <article>
-      <img src="{% static 'img/zika.png' %}" alt="popular model image"/>
-      <h1>Zika Virus Model</h1>
-    </article>
+<!-- <h1>Popular Models:</h1>
+<div id="popular_models" class="gridView modelGrid">
 
-    <article>
-      <img src="{% static 'img/mumps.jpg' %}" alt="popular model image"/>
-      <h1>Mumps Virus Model</h1>
-    </article>
+</div>
+<h1>My Models:</h1>
+<div id="my_models" class="gridView modelGrid">
 
-    <article>
-      <img src="{% static 'img/ebola.png' %}" alt="popular model image"/>
-      <h1>Ebola Virus Model</h1>
-    </article>
-
-    <article>
-      <img src="{% static 'img/tube.jpg' %}" alt="popular model image"/>
-      <h1>Tuberculosis Model</h1>
-    </article>
-
-    <article>
-      <img src="{% static 'img/measles.jpg' %}" alt="popular model image"/>
-      <h1>Measles Virus Model</h1>
-    </article>
-
-    <article>
-      <img src="{% static 'img/seasonalflu.png' %}" alt="popular model image"/>
-      <h1>Seasonal Flu Model</h1>
-    </article>
-
-    <article>
-      <img src="{% static 'img/lassa.png' %}" alt="popular model image"/>
-      <h1>Lassa Virus Model</h1>
-    </article>
-  </div>
+</div> -->
 {% endblock %}
