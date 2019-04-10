@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from ckeditor.fields import RichTextField
 
 class Forum(models.Model):
     topic_name = models.CharField(max_length=30)
@@ -18,7 +19,7 @@ class Thread(models.Model):
         return self.thread_name
 
 class Comment(models.Model):
-    content = models.TextField(max_length=800)
+    content = RichTextField(max_length=800)
     thread = models.ForeignKey(Thread,on_delete=models.CASCADE)
     poster = models.ForeignKey(User,on_delete=models.CASCADE)
     date=models.DateTimeField(auto_now_add=True)
@@ -27,5 +28,6 @@ class Comment(models.Model):
         return self.content
 
 class Reply(Comment):
+    reply_content = models.TextField(max_length=800, null = True)
     parent_comment = models.ForeignKey(Comment, blank=False, related_name='comment_parent',on_delete=models.CASCADE)
     child_comment = models.ForeignKey(Comment, blank=True, null=True, related_name='comment_sibling', on_delete=models.CASCADE)

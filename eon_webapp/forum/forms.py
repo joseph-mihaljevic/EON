@@ -24,4 +24,4 @@ class ReplyCreationForm(forms.ModelForm):
 
     class Meta:
         model = Reply
-        fields = ('content','parent_comment', 'child_comment')
+        fields = ('reply_content','parent_comment', 'child_comment')

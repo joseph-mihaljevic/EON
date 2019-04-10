@@ -9,15 +9,17 @@
       <td style="border: 2px solid #1e1e1e; margin-left: 5px; padding: 10px 10px 10px 20px;">
         Reply: Posted by: {{reply.attributes.poster}}<br>
         Created at: {{reply.attributes.date}}<br><br>
-        {{reply.attributes.content}}<br><br>
+        {{reply.attributes.reply_content}}<br><br>
 
         <form method="POST" action="">
           {% csrf_token %}
             {{reply.form.non_field_errors}}
-            {{reply.form.content}}
+            <div id="replyBox_{{reply.attributes.id}}" style="display:none;">
+              {{reply.form.reply_content}}
+            </div>
             <input type="hidden" name="parent_comment" value="{{ reply.attributes.id}}">
           <div class="col-sm">
-            <input type="submit" name="submit_type" value="Reply">
+            <input onclick="boxAppear(this);" type="submit" name="submit_type" value="Reply" attr-id="{{reply.attributes.id}}">
           </div><br>
         </form>
 
@@ -26,15 +28,17 @@
             <div style="border: 2px solid #2c2c2c; margin-left: 5px; padding: 10px 10px 10px 20px;">
               Sub: Posted by: {{sub_reply.attributes.poster}}<br>
               Created at: {{sub_reply.attributes.date}}<br><br>
-              {{sub_reply.attributes.content}}<br><br>
+              {{sub_reply.attributes.reply_content}}<br><br>
 
               <form method="POST" action="">
                 {% csrf_token %}
                   {{sub_reply.form.non_field_errors}}
-                  {{sub_reply.form.content}}
+                  <div id="replyBox_{{sub_reply.attributes.id}}" style="display:none;">
+                    {{sub_reply.form.reply_content}}
+                  </div>
                   <input type="hidden" name="parent_comment" value="{{ sub_reply.attributes.id}}">
                 <div class="col-sm">
-                  <input type="submit" name="submit_type" value="Reply">
+                  <input onclick="boxAppear(this);" type="submit" name="submit_type" value="Reply" attr-id="{{sub_reply.attributes.id}}">
                 </div><br>
               </form>
             {% show_replies sub_reply.attributes %}
