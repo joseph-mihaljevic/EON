@@ -42,7 +42,6 @@ h2 {
   background: #b7edb3;
   overflow-x: hidden;
   padding: 8px 0;
-  height: 100%;
 }
 
 .container .sidenav a {
@@ -63,7 +62,6 @@ h2 {
   display: inline-block;
   padding-bottom: 20px;
   font-size: 28px; /* Increased text to enable scrolling */
-  height:100%;
 }
 
 .checkbox_label {
@@ -83,7 +81,6 @@ navbar{
   grid-template-columns: 10% 70% 20%;
   background-color: #8fe388;
   grid-area: header;
-  height:100%;
 }
 navbar a {
   grid-area: nleft;
@@ -110,6 +107,7 @@ navbar h1{
   justify-self: stretch;
 }
 navbar .dropbtn {
+  height:100%;
   background-color: #8fe388;
 }
 navbar .dropdown {
@@ -126,7 +124,6 @@ footer{
   grid-area: footer;
   padding: 25px 0 25px 200px;
   background-color: #8fe388;
-  height: 100%;
 }
 footer {
   display: block;
