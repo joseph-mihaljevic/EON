@@ -139,6 +139,7 @@ CKEDITOR_JQUERY_URL = os.path.join(STATIC_URL, 'js/jquery.min.js')
 
 CKEDITOR_CONFIGS = {
     'default': {
+        'skin': 'moono',
         'toolbar_Basic': [
             ['Source', '-', 'Bold', 'Italic']
         ],
@@ -177,6 +178,7 @@ CKEDITOR_CONFIGS = {
             'embedsemantic',
             # 'autogrow',
             # 'devtools',
+            'mathjax',
             'widget',
             'lineutils',
             'clipboard',
