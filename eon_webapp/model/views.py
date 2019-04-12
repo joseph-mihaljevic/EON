@@ -252,19 +252,17 @@ def update_graph_json(request,model_id):
         context['url_path']="/model/UpdateGraphJson/%i"%model_id
         return render(request, "model/update_graph_json.html",context)
     if request.method == 'POST':
-        input_field_list = str(request.body.decode("utf-8")).split('&')[1:]
-        print(input_field_list)
-        input_field_dict = {}
-        for input in input_field_list:
-            input_field_dict[input.split("=")[0]]=input.split("=")[1]
+        input_field_dict = request.POST
+        input_field_list = [input_field for input_field in sorted(request.POST.keys())]
         json_dict = {}
         json_dict["parameters"]=[]
         param_ids=[]
         for input in input_field_list:
-            if "param" in input:
+            if ("param" in input and "checkbox" not in input):
                 param_id=input.split("_")[0]
                 if param_id not in param_ids:
                     param_ids.append(param_id)
+        print(param_ids)
         for param_id in param_ids:
             param_dict={}
             param_dict["name"]=input_field_dict["%s_name"%param_id]
