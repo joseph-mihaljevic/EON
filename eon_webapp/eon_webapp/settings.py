@@ -58,6 +58,7 @@ ROOT_URLCONF = 'eon_webapp.urls'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+LOGIN_URL = '/user/login/'
 
 TEMPLATES = [
     {

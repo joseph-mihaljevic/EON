@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from .models import Forum, Thread, Comment, Reply
 from .forms import ForumCreationForm, PostCreationForm, CommentCreationForm, ReplyCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class Index(generic.ListView):
     model = Forum
@@ -14,13 +15,14 @@ class Index(generic.ListView):
         """Return all forums"""
         return Forum.objects.all()
 
-class CreateForum(generic.CreateView):
+# Class based so use mixin
+class CreateForum(LoginRequiredMixin,generic.CreateView):
     form_class = ForumCreationForm
     success_url = reverse_lazy('forum_index')
     template_name = 'forum/create_forum.html'
 
-
-class CreatePost(generic.CreateView):
+# Class based so use mixin
+class CreatePost(LoginRequiredMixin,generic.CreateView):
     form_class = PostCreationForm
     # success_url = reverse_lazy('forum_index')
     template_name = 'forum/create_post.html'
@@ -31,7 +33,7 @@ class CreatePost(generic.CreateView):
         return super(CreatePost, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('forum_view', kwargs={'in_id': self.kwargs['forum_id']}) 
+        return reverse_lazy('forum_view', kwargs={'in_id': self.kwargs['forum_id']})
 
 # class CreateComment(generic.CreateView):
 #     form_class = CommentCreationForm
@@ -54,11 +56,13 @@ class CreatePost(generic.CreateView):
 #
 #         return super(CreateComment, self).form_valid(form)
 
+# Use get (request.user)
 def ViewForum(request,in_id):
     forum = Forum.objects.get(id=int(in_id))
     threads = Thread.objects.filter(forum = forum)
     return render(request, 'forum/view.html', {"forum_id": forum.id, "forum_name":forum.topic_name,"forum_desc":forum.description,"threads":threads})
 
+# Use decorators for permissions - no class based view
 def ViewThread(request,thread_id):
     thread = Thread.objects.get(id=int(thread_id))
 
