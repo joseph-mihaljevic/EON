@@ -6,6 +6,7 @@ from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from .models import Group,GroupMember,JoinGroupRequest,GroupInvite
 from user.models import Friend
 from .forms import GroupForm
+from forum.models import Thread, Forum, Comment
 from django.contrib.auth.models import User
 
 # Create your views here.
@@ -101,7 +102,6 @@ def List_UsersGroups(request):
     return render(request, "group/List_UsersGroups.html", context)
 
 def CreateGroup(request):
-
     #if !groupname:
     print(request.method)
     if (request.method == 'GET'):
@@ -117,12 +117,10 @@ def CreateGroup(request):
         if (alreadyExists.count()):
             return render(request, 'friend/FormFill_FriendRequest.html', {"from": " Group already exists !"})
         if form.is_valid():
-            Group.make_group(name=context['name'],about=context['about'],user= request.user)
-            #Group.objects.create(name = context['name'], about = context['about'])
+            Grouper = Group.make_group(name=context['name'],about=context['about'],user= request.user)
+            Forum.objects.create(topic_name=str(Grouper.name) + " Forum", description="The forum of the group " + str(Grouper.name), group = Grouper)
             return render(request, 'group/Group_CreatedRedirect.html', {"Message": "Group: "+ context['name']+" Created !", "group":context['name']})
 
-        else:
-            return render(request, '404.html',{"Message": "You just submitted an invalid Group Form !"})
             #return render(request, 'friend/FormFill_FriendRequest.html', {"from": "You just submitted an invalid Group Form !"})
     return render(request, '404.html',{"Message": "Experienced group doesnt exist!"})
     #model.created_by = request.user

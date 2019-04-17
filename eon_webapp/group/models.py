@@ -19,7 +19,6 @@ class Group(models.Model):
     # These values denote the access of
     Private = models.BooleanField(default=False)
     Editable = models.BooleanField(default=False)
-    #group_forum = models.ForeignKey(Forum, on_delete="remove")
     #private = models.
 
     #@classmethod
@@ -46,6 +45,9 @@ class Group(models.Model):
         #GroupMember.addAdmin(Group = group, user = user)
         #GroupMember.addUser(Group = group, user = user)
         GroupMember.addAdmin(Group,user)
+
+
+        return Group
         #group.set()
     @classmethod
     def changePrivacyPreference(cls, name, Private):

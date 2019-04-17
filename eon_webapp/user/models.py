@@ -4,7 +4,7 @@ from forum.models import Forum
 from django.urls import reverse
 # Create your models here.
 from model.models import UserModel
-
+from forum.models import Thread, Forum, Comment
 from django.contrib.auth.models import User
 
 

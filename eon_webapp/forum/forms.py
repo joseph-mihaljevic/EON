@@ -3,7 +3,6 @@ from django import forms
 from .models import Forum, Thread, Comment, Reply
 
 class ForumCreationForm(forms.ModelForm):
-
     class Meta:
         model = Forum
         fields = ('topic_name','description')

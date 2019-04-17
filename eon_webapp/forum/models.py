@@ -2,10 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 from ckeditor.fields import RichTextField
+from group.models import Group
 
 class Forum(models.Model):
     topic_name = models.CharField(max_length=30)
     description = models.CharField(max_length=120)
+    group = models.ForeignKey(Group, null=True, blank=True,on_delete=models.CASCADE)
     def __str__(self):
         return self.topic_name
 

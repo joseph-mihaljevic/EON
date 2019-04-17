@@ -37,10 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user.apps.UserConfig',
     'forum.apps.ForumConfig',
+    'group.apps.GroupConfig',
+    'user.apps.UserConfig',
     'model.apps.ModelConfig',
-    'group',
     'ckeditor',
 ]
 
