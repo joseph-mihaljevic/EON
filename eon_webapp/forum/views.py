@@ -4,8 +4,12 @@ from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views import generic
 from .models import Forum, Thread, Comment, Reply
+from group.models import Group, GroupMember
 from .forms import ForumCreationForm, PostCreationForm, CommentCreationForm, ReplyCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseRedirect
+
 
 class Index(generic.ListView):
     model = Forum
@@ -60,7 +64,33 @@ class CreatePost(LoginRequiredMixin,generic.CreateView):
 def ViewForum(request,in_id):
     forum = Forum.objects.get(id=int(in_id))
     threads = Thread.objects.filter(forum = forum)
-    return render(request, 'forum/view.html', {"forum_id": forum.id, "forum_name":forum.topic_name,"forum_desc":forum.description,"threads":threads})
+    # get groupmember object
+    groups = list()
+    try:
+        group_members = GroupMember.objects.filter(user = request.user)
+        for group_member in group_members:
+            for group in group_member.group.all():
+                groups.append(group)
+        print(groups)
+        #     groups = None
+    except ObjectDoesNotExist:
+        group_member = None
+        # grab all Groups
+    print(groups)
+    required_group = forum.group
+    if (required_group is not None and required_group in groups) or (required_group is None):
+        return render(request, 'forum/view.html', {"forum_id": forum.id, "forum_name":forum.topic_name,"forum_desc":forum.description,"threads":threads})
+    else:
+        return HttpResponseRedirect(reverse_lazy('forum_index'))
+
+    # # see if user is in the group tied to the forum
+    #
+    # print(forum.group)
+    # print(request.user)
+    # print(grouper.pk)
+    # # if request.user == grouper.pk:
+    # # else:
+    #     # you aren't part of this group
 
 # Use decorators for permissions - no class based view
 def ViewThread(request,thread_id):
