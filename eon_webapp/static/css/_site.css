@@ -30,7 +30,7 @@ h2 {
     'header header header header header'
     'menu main main main main'
     'menu footer footer footer footer';
-  grid-template-rows: 10% 80% 10%;
+  /* grid-template-rows: 10% 80% 10%; */
   grid-template-columns: 15% 25% 20% 20% 20%;
 }
 

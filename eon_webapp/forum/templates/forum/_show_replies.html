@@ -11,6 +11,7 @@
         Created at: {{reply.attributes.date}}<br><br>
         {{reply.attributes.reply_content}}<br><br>
 
+        {% if request.user.is_authenticated %}
         <form method="POST" action="">
           {% csrf_token %}
             {{reply.form.non_field_errors}}
@@ -22,6 +23,7 @@
             <input onclick="boxAppear(this);" type="submit" name="submit_type" value="Reply" attr-id="{{reply.attributes.id}}">
           </div><br>
         </form>
+        {% endif %}
 
         {% if reply.replies %}
           {% for sub_reply in reply.replies%}
@@ -30,6 +32,7 @@
               Created at: {{sub_reply.attributes.date}}<br><br>
               {{sub_reply.attributes.reply_content}}<br><br>
 
+              {% if request.user.is_authenticated %}
               <form method="POST" action="">
                 {% csrf_token %}
                   {{sub_reply.form.non_field_errors}}
@@ -41,6 +44,7 @@
                   <input onclick="boxAppear(this);" type="submit" name="submit_type" value="Reply" attr-id="{{sub_reply.attributes.id}}">
                 </div><br>
               </form>
+              {% endif %}
             {% show_replies sub_reply.attributes %}
             </div>
           {% endfor %}

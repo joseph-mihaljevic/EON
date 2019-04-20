@@ -9,6 +9,7 @@
       Created at: {{comment.attributes.date}}<br><br>
       {{comment.attributes.content|safe}}<br><br>
 
+      {% if request.user.is_authenticated %}
       <form method="POST" action="">
         {% csrf_token %}
           {{comment.form.non_field_errors}}
@@ -20,32 +21,34 @@
           <input onclick="boxAppear(this);" type="submit" name="submit_type" value="Reply" attr-id="{{comment.attributes.id}}">
         </div><br>
       </form>
+      {% endif %}
 
-    {% if comment.replies %}
+      {% if comment.replies %}
 
-      {% for reply in comment.replies %}
-      <div style="border: 2px solid #262626; margin: 10px 5px; padding: 10px 10px 10px 20px;">
-        Posted by: {{reply.attributes.poster}}<br>
-        Created at: {{reply.attributes.date}}<br><br>
-        {{reply.attributes.reply_content}}<br><br>
+        {% for reply in comment.replies %}
+        <div style="border: 2px solid #262626; margin: 10px 5px; padding: 10px 10px 10px 20px;">
+          Posted by: {{reply.attributes.poster}}<br>
+          Created at: {{reply.attributes.date}}<br><br>
+          {{reply.attributes.reply_content}}<br><br>
 
-        <form method="POST" action="">
-          {% csrf_token %}
-            {{reply.form.non_field_errors}}
-            <div id="replyBox_{{reply.attributes.id}}" style="display:none;">
-              {{comment.form.reply_content}}
-            </div>
-            <input type="hidden" name="parent_comment" value="{{ reply.attributes.id }}">
-          <div class="col-sm">
-            <input onclick="boxAppear(this);" type="submit" name="submit_type" value="Reply" attr-id="{{reply.attributes.id}}">
-          </div><br>
-        </form>
+          {% if request.user.is_authenticated %}
+          <form method="POST" action="">
+            {% csrf_token %}
+              {{reply.form.non_field_errors}}
+              <div id="replyBox_{{reply.attributes.id}}" style="display:none;">
+                {{comment.form.reply_content}}
+              </div>
+              <input type="hidden" name="parent_comment" value="{{ reply.attributes.id }}">
+            <div class="col-sm">
+              <input onclick="boxAppear(this);" type="submit" name="submit_type" value="Reply" attr-id="{{reply.attributes.id}}">
+            </div><br>
+          </form>
+          {% endif %}
 
-
-        {% show_replies reply.attributes %}
-        </div>
-      {% endfor %}
-    {% endif %}
+          {% show_replies reply.attributes %}
+          </div>
+        {% endfor %}
+      {% endif %}
     </li>
   {% endfor %}
 </ul>

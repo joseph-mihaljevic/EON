@@ -4,8 +4,8 @@ from ..models import Comment, Reply
 
 register = template.Library()
 
-@register.inclusion_tag("forum/_show_comments.html")
-def show_comments(thread):
+@register.inclusion_tag("forum/_show_comments.html", takes_context=True)
+def show_comments(context, thread):
     all_comments = list()
     comments = Comment.objects.filter(reply = None, thread_id = thread.id)
 
@@ -16,7 +16,8 @@ def show_comments(thread):
             "attributes": comment,
             "replies": comment_replies,
             "form": form})
-    return {'comments': all_comments}
+    context['comments'] = all_comments
+    return context
 
 def get_replies(comment):
     all_replies = list();
@@ -31,8 +32,8 @@ def get_replies(comment):
     else:
         return list("")
 
-@register.inclusion_tag("forum/_show_replies.html")
-def show_replies(reply):
+@register.inclusion_tag("forum/_show_replies.html", takes_context=True)
+def show_replies(context, reply):
     all_replies = list()
     gen_form = ReplyCreationForm(reply)
     replies = Reply.objects.filter(parent_comment = reply)
@@ -43,4 +44,7 @@ def show_replies(reply):
         all_replies.append({"attributes": sub_reply,
                     "replies": sub_replies,
                     "form" : form})
-    return {'reply': reply, 'form': gen_form, 'replies': all_replies}
+    context['reply'] = reply
+    context['form'] = gen_form
+    context['replies'] = all_replies
+    return context

@@ -17,7 +17,20 @@ class Index(generic.ListView):
     context_object_name = 'forums'
     def get_queryset(self):
         """Return all forums"""
-        return Forum.objects.all()
+        forums = Forum.objects.all()
+        forums = [forum for forum in forums if (forum.group==None or self.validate_user_in_forum_group(forum))]
+        return forums
+    def validate_user_in_forum_group(self,forum):
+        if not self.request.user.is_authenticated:
+            return False
+        group_members = GroupMember.objects.filter(user=self.request.user)
+        group_ids=[]
+        for group_member in group_members:
+            group_ids += [group.id for group in group_member.group.all()]
+        if forum.group.id in group_ids:
+            return True
+        else:
+            return False
 
 # Class based so use mixin
 class CreateForum(LoginRequiredMixin,generic.CreateView):
@@ -28,7 +41,6 @@ class CreateForum(LoginRequiredMixin,generic.CreateView):
 # Class based so use mixin
 class CreatePost(LoginRequiredMixin,generic.CreateView):
     form_class = PostCreationForm
-    # success_url = reverse_lazy('forum_index')
     template_name = 'forum/create_post.html'
 
     def form_valid(self, form):
@@ -39,26 +51,6 @@ class CreatePost(LoginRequiredMixin,generic.CreateView):
     def get_success_url(self):
         return reverse_lazy('forum_view', kwargs={'in_id': self.kwargs['forum_id']})
 
-# class CreateComment(generic.CreateView):
-#     form_class = CommentCreationForm
-#     model = Comment
-#
-#     # def get_object(self,**kwargs):
-#     #     pk_ = self.kwargs.get("id")
-#     #     return get_object_or_404(Thread,pk = pk_)
-#     #
-#     # def get_context_data(self, **kwargs):
-#     #     thread = self.object
-#     #     comments = Comment.objects.filter(thread = thread)
-#     #     context ={ "thread":thread,"comments":comments }
-#
-#     def form_valid(self, form):
-#         # form.instance.comment = Comment.objects.get(id=self.kwargs['thread_id'])
-#         form.instance.poster = self.request.user
-#         form.instance.thread = Thread.objects.get(id=self.kwargs['thread_id'])
-#         self.success_url = reverse_lazy('thread_view',kwargs={"thread_id": self.kwargs['thread_id']})
-#
-#         return super(CreateComment, self).form_valid(form)
 
 # Use get (request.user)
 def ViewForum(request,in_id):
@@ -67,36 +59,28 @@ def ViewForum(request,in_id):
     # get groupmember object
     groups = list()
     try:
-        group_members = GroupMember.objects.filter(user = request.user)
-        for group_member in group_members:
-            for group in group_member.group.all():
-                groups.append(group)
-        print(groups)
+        if not request.user.is_authenticated:
+            group_member = None
+        else:
+            group_members = GroupMember.objects.filter(user = request.user)
+            for group_member in group_members:
+                for group in group_member.group.all():
+                    groups.append(group)
         #     groups = None
     except ObjectDoesNotExist:
         group_member = None
         # grab all Groups
-    print(groups)
     required_group = forum.group
     if (required_group is not None and required_group in groups) or (required_group is None):
         return render(request, 'forum/view.html', {"forum_id": forum.id, "forum_name":forum.topic_name,"forum_desc":forum.description,"threads":threads})
     else:
         return HttpResponseRedirect(reverse_lazy('forum_index'))
 
-    # # see if user is in the group tied to the forum
-    #
-    # print(forum.group)
-    # print(request.user)
-    # print(grouper.pk)
-    # # if request.user == grouper.pk:
-    # # else:
-    #     # you aren't part of this group
-
 # Use decorators for permissions - no class based view
 def ViewThread(request,thread_id):
     thread = Thread.objects.get(id=int(thread_id))
 
-    if request.method == 'POST':
+    if request.user.is_authenticated and request.method == 'POST':
         print(request.POST)
         if request.POST and len(request.POST) > 0:
             form = None

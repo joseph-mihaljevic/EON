@@ -19,6 +19,8 @@
 </div><br>
 {% show_comments thread %}
 <br>
+
+{% if request.user.is_authenticated %}
 <form method="POST" action="" style="overflow:visible;">
   {% csrf_token %}
     {{form.content}}
@@ -29,4 +31,5 @@
     <input type="submit" name="submit_type" value="Comment">
   </div><br>
 </form>
+{% endif %}
 {% endblock %}
