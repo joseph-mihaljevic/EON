@@ -58,10 +58,10 @@ class Group(models.Model):
         Editing_Group.Private = Private
         Editing_Group.save()
         return True
-
-    def changeEditablePreference(cls, group, Editable):
+    @classmethod
+    def changeEditablePreference(cls, name, Editable):
         print("calling get_or_create")
-        Editing_Group, created = cls.objects.get(name = name)
+        Editing_Group = Group.objects.get(name = name)
         Editing_Group.Editable = Editable
         Editing_Group.save()
         return True
@@ -107,7 +107,7 @@ class GroupMember(models.Model):
         print(group.Editable)
         if (group.Editable):
             return True
-        #print(userPK)
+        print("UserPK",userPK)
 
         GroupMember = cls.objects.filter(
             group = group,
@@ -124,8 +124,9 @@ class GroupMember(models.Model):
     def UserHas_View_Privlege(cls, userPK,group):
         if (not (group.Private)):
             return True
+        print("UserPK",userPK)
         GroupMember = cls.objects.filter(
-            group = Group,
+            group = group,
             user = userPK
         )
         if not GroupMember.count():
