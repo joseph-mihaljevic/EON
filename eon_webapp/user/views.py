@@ -138,8 +138,15 @@ class UpdateProfile(UpdateView):
 
     fields = ['name','pic','email','bio','affiliation']
     template_name = 'users/Update_Profile.html'
+    def get_context_data(self, *args, **kwargs):
+        data = super().get_context_data(**kwargs)
 
+        obj = super(UpdateProfile, self).get_object(*args, **kwargs)
+        data['User_Prof'] = True
+        if not obj.user_pk == self.request.user:
+            data['User_Prof'] = False
 
+        return data
 
 
 

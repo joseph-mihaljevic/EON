@@ -16,6 +16,7 @@ class Group(models.Model):
     #group_id = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     about = models.CharField(max_length=500, null=True)
+    #TextField(max_length=500)
     # These values denote the access of
     Private = models.BooleanField(default=False)
     Editable = models.BooleanField(default=False)

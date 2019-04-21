@@ -4,20 +4,25 @@
 
 {% block content %}
 
-<form action="" method="post" class="form-horizontal" enctype="multipart/model-data" >
-    {% csrf_token %}
-    {% include 'model/form-template.html'%}
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="Submit">Submit</button>
-      </div>
+  {% if User_Prof %}
 
-    </div>
+    <form action="" method="post" class="form-horizontal" enctype="multipart/model-data" >
+        {% csrf_token %}
+        {% include 'model/form-template.html'%}
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="Submit">Submit</button>
+          </div>
 
-</form>
+        </div>
 
-<a href="">View Account</a>
+    </form>
 
+    <a href="{% url 'display_UserInfo' user.username%}">Back to Profile</a>
+
+  {% else %}
+    You are not loged in as User! Cannot edit profile.
+  {% endif %}
 
 
 {% endblock %}
