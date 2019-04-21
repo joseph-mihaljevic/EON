@@ -23,7 +23,7 @@
       <p>Found {{ users|length }} users{{ users|pluralize }}.</p>
       <ul>
           {% for user in users %}
-          <li>User: {{ user.username }} <a href="{% url 'change_friendship' 'add' user.pk%}"> Add friend </a></li>
+          <li>User: {{ user.username }} <a href="{% url 'display_UserInfo' user.username %}"> view </a>/<a href="{% url 'change_friendship' 'add' user.pk%}"> Add friend </a></li>
 
           {% endfor %}
       </ul>
