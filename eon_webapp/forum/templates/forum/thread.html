@@ -10,6 +10,7 @@
 
 {% block content %}
 <div class="col-sm">
+  <!-- Display Thread name, author, and post date -->
   <h3>Thread Name: {{thread.thread_name}}</h3>
   <p>Author: {{thread.poster}}</p>
   <p>Posted at: {{ thread.date }}</p>
@@ -25,6 +26,7 @@
   {% csrf_token %}
     {{form.content}}
     {{form.non_field_errors}}
+    <!-- Make sure you include this form.media if you want to use RTE  -->
     {{form.media}}
 
   <div class="col-sm">

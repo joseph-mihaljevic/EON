@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Forum,Thread,Comment,Reply
-# Register your models here.
+
+# Make sure to register models here
 
 class ForumAdmin(admin.ModelAdmin):
     list_display = ('topic_name','description')

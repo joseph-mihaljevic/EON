@@ -5,10 +5,8 @@
 <br>
 <form method="POST" action="">
   {% csrf_token %}
-  <!-- <textarea name="content" rows="8" cols="80"> -->
     {{form.content}}
     {{form.non_field_errors}}
-  <!-- </textarea> -->
   <div class="col-sm">
     <input type="submit" value="Submit">
   </div><br>
