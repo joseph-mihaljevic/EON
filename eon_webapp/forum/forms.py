@@ -14,7 +14,7 @@ class PostCreationForm(forms.ModelForm):
 class CommentCreationForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ('content')
+        fields = ('content',)
 
 class ReplyCreationForm(forms.ModelForm):
     class Meta:
