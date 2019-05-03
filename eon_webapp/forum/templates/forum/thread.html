@@ -27,7 +27,8 @@
   <p>Posted at: {{ thread.date }}</p>
 </div>
 <div class="col-sm">
-  {{thread.description}}
+  {{thread.description|safe}}
+  <hr>
 </div><br>
 {% show_comments thread %}
 <br>

@@ -7,7 +7,7 @@ from group.models import Group
 # Creation of Forum table which has a topic name, description, and group connections
 class Forum(models.Model):
     topic_name = models.CharField(max_length=30)
-    description = models.CharField(max_length=120)
+    description = RichTextField(max_length=120, config_name='description')
     # Based on app groups model
     group = models.ForeignKey(Group, null=True, blank=True,on_delete=models.CASCADE)
     def __str__(self):
@@ -19,7 +19,7 @@ class Thread(models.Model):
     thread_name = models.CharField(max_length=80)
     date=models.DateTimeField(auto_now_add=True)
     poster = models.ForeignKey(User,on_delete=models.CASCADE)
-    description = models.TextField(max_length=300)
+    description = RichTextField(max_length=300, config_name='description')
     forum = models.ForeignKey(Forum,on_delete=models.CASCADE)
     def __str__(self):
         return self.thread_name

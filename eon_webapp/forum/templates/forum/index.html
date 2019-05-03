@@ -15,4 +15,7 @@
   {% else %}
     <p>There are no forums.</p>
   {% endif %}
+  {% if request.user.is_superuser %}
+    <br><a href="/forum/create"><button style="font-size:28px;">New Forum</button></a>
+  {% endif %}
 {% endblock %}

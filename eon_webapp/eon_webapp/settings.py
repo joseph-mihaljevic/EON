@@ -147,10 +147,10 @@ CKEDITOR_CONFIGS = {
         'toolbar_YourCustomToolbarConfig': [
             '/',
             {'name': 'basicstyles',
-             'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat']},
+             'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript']},
             {'name': 'paragraph',
-             'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-',
-                       'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl']},
+             'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-',
+                       'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
             '/',
             {'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize']},
             {'name': 'colors', 'items': ['TextColor', 'BGColor']},
@@ -182,5 +182,49 @@ CKEDITOR_CONFIGS = {
             'dialogui',
             'elementspath'
         ]),
-    }
+    },
+    'description': {
+            'skin': 'moono',
+            'toolbar_Basic': [
+                ['Source', '-', 'Bold', 'Italic']
+            ],
+            'toolbar_YourCustomToolbarConfig': [
+                '/',
+                {'name': 'basicstyles',
+                 'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript']},
+                {'name': 'colors', 'items': ['TextColor', 'BGColor']},
+                '-',
+                {'name': 'mathjax', 'items': ['Mathjax','Preview']},
+                '/',
+                {'name': 'paragraph',
+                 'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-',
+                           'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
+                '/',
+                {'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize']},
+            ],
+            'toolbar': 'YourCustomToolbarConfig',  # put selected toolbar config here
+            # 'toolbarGroups': [{ 'name': 'document', 'groups': [ 'mode', 'document', 'doctools' ] }],
+            'height': 300,
+            'width': '100%',
+            # 'filebrowserWindowHeight': 725,
+            # 'filebrowserWindowWidth': 940,
+            # 'toolbarCanCollapse': True,
+            'mathJaxLib': '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
+            'tabSpaces': 4,
+            'extraPlugins': ','.join([
+                'uploadimage', # the upload image feature
+                # your extra plugins here
+                'div',
+                'autolink',
+                'autoembed',
+                'embedsemantic',
+                'mathjax',
+                'widget',
+                'lineutils',
+                'clipboard',
+                'dialog',
+                'dialogui',
+                'elementspath'
+            ]),
+        }
 }
