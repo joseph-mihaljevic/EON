@@ -1,0 +1,19 @@
+#graph-container {
+  background-color: #ddeaff;
+  display: grid;
+  grid-template-areas:
+    'gleft' 'gright';
+  height: 300px;
+  padding-bottom: 20px;
+}
+#graph-div {
+  margin: 20px 20px 0 0;
+  display: inline-block;
+  grid-area: gright;
+  height: inherit;
+}
+#form-div {
+  margin: 20px 20px 0 0;
+  display: inline-block;
+  grid-area: gleft-end;
+}

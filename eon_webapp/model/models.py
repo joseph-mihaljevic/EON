@@ -25,6 +25,9 @@ class UserModel(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     thread = models.ForeignKey(Thread,on_delete=models.CASCADE)
     group = models.ManyToManyField(Group)
+    is_github = models.BooleanField(default=False)
+    git_repo_link = models.CharField(max_length=128, default="")
+
     # TODO: add this: EONid = models.CharField(max_length=256)
 
     def get_absolute_url(self):

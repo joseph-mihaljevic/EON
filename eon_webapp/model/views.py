@@ -40,7 +40,7 @@ class Index(generic.ListView):
 
 class CreateUserModel(CreateView):
     model = UserModel
-    fields = ['model_name','description','code_language','executable_file_name']
+    fields = ['model_name','description','code_language','executable_file_name','is_github','git_repo_link']
     template_name = 'model/UserModel_Create.html'
     def get_success_url(self):
         return reverse('update_graph_json', args=(self.object.id,))
@@ -68,14 +68,18 @@ class CreateUserModel(CreateView):
         # with open(model_folder_location+"/specification.json", 'wb+') as destination:
         #     for chunk in specs_json.chunks():
         #         destination.write(chunk)
-        user_code = self.request.FILES["model_code"]
-        with open(model_folder_location+"/zipped_code.zip", 'wb+') as destination:
-            for chunk in user_code.chunks():
-                destination.write(chunk)
-        # unzip the files in place
-        with zipfile.ZipFile(model_folder_location+"/zipped_code.zip", 'r') as zipped_code:
-            zipped_code.extractall(model_folder_location)
-        os.remove(model_folder_location+"/zipped_code.zip") #zip not needed after extraction
+        if user_model.is_github:
+            print("Pulling from repository %s into folder %s." % (user_model.git_repo_link,user_model.folder_location))
+            subprocess.run(["git","clone",user_model.git_repo_link,user_model.folder_location])
+        else:
+            user_code = self.request.FILES["model_code"]
+            with open(model_folder_location+"/zipped_code.zip", 'wb+') as destination:
+                for chunk in user_code.chunks():
+                    destination.write(chunk)
+            # unzip the files in place
+            with zipfile.ZipFile(model_folder_location+"/zipped_code.zip", 'r') as zipped_code:
+                zipped_code.extractall(model_folder_location)
+            os.remove(model_folder_location+"/zipped_code.zip") #zip not needed after extraction
         return super(CreateUserModel, self).form_valid(form)
 
     #context_object_name = "UserModel"
