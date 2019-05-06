@@ -119,4 +119,4 @@ def ViewThread(request,thread_id):
     else:
         form = CommentCreationForm()
 
-    return render(request, 'forum/thread.html', {"form": form, "thread":thread})
+    return render(request, 'forum/thread_container.html', {"form": form, "thread":thread, "view_source":"Forum"})

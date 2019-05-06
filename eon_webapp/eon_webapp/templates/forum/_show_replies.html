@@ -12,6 +12,7 @@
         {{reply.attributes.reply_content}}<br><br>
 
         {% if request.user.is_authenticated %}
+        {% if view_source == "Forum" %}
         <form method="POST" action="">
           {% csrf_token %}
             {{reply.form.non_field_errors}}
@@ -23,6 +24,7 @@
             <input onclick="boxAppear(this);" type="submit" name="submit_type" value="Reply" attr-id="{{reply.attributes.id}}">
           </div><br>
         </form>
+        {% endif %}
         {% endif %}
 
         {% if reply.replies %}

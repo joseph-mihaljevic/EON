@@ -177,6 +177,7 @@ def view_user_model(request,pk):
     context={"id":pk,"url_path":"/model/View/%i/"%pk}
     context["thread"]=model.thread
     context["comments"]=Comment.objects.filter(thread = model.thread)
+    context["view_source"]="Model"
 
     folder_location = str(model.folder_location)
     csv_location = "%s/output.csv"%folder_location

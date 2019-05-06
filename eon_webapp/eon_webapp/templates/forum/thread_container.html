@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/models/view.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'forum/thread.html' %}
+{% endblock %}

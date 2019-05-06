@@ -1,6 +1,5 @@
-{% extends 'base.html' %}
+
 {% load forum_extras %}
-{% block title %}Forum View{% endblock %}
 {% load static %}
 
 {% block javascripts %}
@@ -34,6 +33,7 @@
 <br>
 
 {% if request.user.is_authenticated %}
+{% if view_source == "Forum" %}
 <form method="POST" action="" style="overflow:visible;">
   {% csrf_token %}
     {{form.content}}
@@ -45,5 +45,8 @@
     <input type="submit" name="submit_type" value="Comment">
   </div><br>
 </form>
+{% elif view_source == "Model" %}
+Please visit the forum <a href="/forum/view/thread/{{thread.id}}">here</a> to comment.
+{% endif %}
 {% endif %}
 {% endblock %}

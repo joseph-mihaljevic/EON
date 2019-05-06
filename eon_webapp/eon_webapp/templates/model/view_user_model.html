@@ -24,29 +24,7 @@
   </div>
 </div>
 <hr>
-<div class="col-sm">
-  <h3>Thread Name: {{thread.thread_name}}</h3>
-  <p>Author: {{thread.poster}}</p>
-  <p>Posted at: {{thread.date}}</p>
-</div>
-<div class="col-sm">
-  {{thread.description}}
-</div><br>
-<a href="/forum/view/thread/{{thread.id}}/comment"><button type="submit">Add Comment</button></a>
-{% if comments %}
-<ul style="list-style: none; padding-left: 0;">
-  {% for comment in comments %}
-    <li>
-      Posted by: {{comment.poster}}<br>
-      Created at: {{comment.date}}<br><br>
-      {{comment.content}}<br><br>
-    </li>
-    <hr />
-  {% endfor %}
-</ul>
-{% else %}
-  <p>There are no comments on this post.</p>
-{% endif %}
+{% include 'forum/thread.html' %}
 
 <script src="http://dygraphs.com/dist/dygraph.js"></script>
 <script type="text/javascript">
