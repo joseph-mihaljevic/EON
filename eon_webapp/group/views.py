@@ -118,8 +118,6 @@ def CreateGroup(request):
             return render(request, 'friend/FormFill_FriendRequest.html', {"from": " Group already exists !"})
         if form.is_valid():
             Grouper = Group.make_group(name=context['name'],about=context['about'],user= request.user)
-            Group.changePrivacyPreference(name=context['name'],Private=context['Viewable_by'])
-            Group.changeEditablePreference(name=context['name'],Editable=context['Editable_to'])
             Forum.objects.create(topic_name=str(Grouper.name) + " Forum", description="The forum of the group " + str(Grouper.name), group = Grouper)
             return render(request, 'group/Group_CreatedRedirect.html', {"Message": "Group: "+ context['name']+" Created !", "group":context['name']})
 
