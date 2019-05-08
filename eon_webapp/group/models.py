@@ -11,7 +11,7 @@ USER_PRIVILEGES_CHOICES = (
   )
 
 
-
+#Table/Class that keeps track of all groups created.
 class Group(models.Model):
     #group_id = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
@@ -22,13 +22,6 @@ class Group(models.Model):
     Editable = models.BooleanField(default=False)
     #private = models.
 
-    #@classmethod
-    #def make_friend(cls, current_user, new_friend):
-    #    friend, created = cls.objects.get_or_create(
-    #        current_user=new_friend
-    #    )
-    #    print(friend.current_user.pk)
-    #    friend.save()
 
 
     #def get_absolute_url(self):
@@ -183,7 +176,7 @@ class GroupMember(models.Model):
         GroupMember.delete()
 
 
-
+#Table/Class that keeps track when a new user wishes to join a group. 
 class JoinGroupRequest(models.Model):
     user         = models.ForeignKey(User,null=True, on_delete=models.CASCADE)
     group        = models.ManyToManyField(Group)
@@ -220,7 +213,8 @@ class JoinGroupRequest(models.Model):
             user = userPK
         )
         JoinGR.delete()
-
+      
+#Keeps track when a group member invites to new user to the group. 
 class GroupInvite(models.Model):
     invite_user  = models.ForeignKey(User, related_name='i_gr', on_delete=models.CASCADE)
     group_member = models.ForeignKey(User, related_name='fi_gr', on_delete=models.CASCADE)
