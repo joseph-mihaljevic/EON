@@ -30,7 +30,7 @@ Change:
 {% endif %}
 
 <h><b>About  {{ Prof.user_pk }}:</b></h>
-{% if User_Prof %}<small>(<a href="{% url 'edit_UserInfo' user.pk%}">Edit</a>)</small>{% else %}<a href="{% url 'change_friendship' 'add' Prof.pk%}"> Send friend request </a>{% endif %}
+{% if User_Prof %}<small>(<a href="{% url 'edit_UserInfo' Prof.pk%}">Edit</a>)</small>{% else %}<a href="{% url 'change_friendship' 'add' Prof.pk%}"> Send friend request </a>{% endif %}
 <hr>
 <p>Name : {{Prof.name}}</p>
 <p>Email: {{Prof.email}}</p>
