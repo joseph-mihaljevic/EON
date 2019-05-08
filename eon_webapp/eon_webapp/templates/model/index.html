@@ -2,11 +2,35 @@
 
 {% extends 'base.html' %}
 
+{% block javascripts %}
+<script>
+function search(search_term) {
+  let models_list_divs = document.getElementById("models_list").children;
+  for(i = 0; i < models_list_divs.length; i++){
+    if(!models_list_divs[i].innerHTML.toLowerCase().includes(search_term.toLowerCase())){
+      models_list_divs[i].style.display="none";
+    }
+    else{
+      models_list_divs[i].style.display="block"
+    }
+  }
+}
+window.onload = function () {
+  search_bar = document.getElementById("search_bar");
+  search_bar.addEventListener("change", function() {
+    console.log("searching")
+    search(this.value);
+  });
+}
+</script>
+{% endblock %}
+
 {% block content %}
 
 <h1>All models</h1>
 {% if user.is_authenticated %}
-
+Search:<input type="text" id="search_bar"></input>
+<hr>
   {% include 'model/UserModels_list.html'%}
 <a id="upload-model" href="{% url 'Create-UserModel' %}">Upload Model</a>
 {% else %}

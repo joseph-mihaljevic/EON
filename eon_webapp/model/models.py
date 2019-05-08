@@ -6,6 +6,7 @@ from django.db.models import signals
 from django.dispatch import Signal
 from forum.models import Thread
 from group.models import Group
+from django.contrib.postgres.fields import ArrayField
 import subprocess
 
 LANGUAGES = ["C","Python","R"]
@@ -25,8 +26,10 @@ class UserModel(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     thread = models.ForeignKey(Thread,on_delete=models.CASCADE)
     group = models.ManyToManyField(Group)
-    is_github = models.BooleanField(default=False)
+    is_github = models.BooleanField(default=False,verbose_name="Is this a github repo?")
     git_repo_link = models.CharField(max_length=128, default="")
+    tags = ArrayField(models.CharField(max_length=200), blank=True,verbose_name="tags (comma separated list)", default=list)
+    views = models.IntegerField(default=0)
 
     # TODO: add this: EONid = models.CharField(max_length=256)
 

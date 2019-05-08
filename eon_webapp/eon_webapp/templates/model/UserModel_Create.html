@@ -1,14 +1,43 @@
 <!DOCTYPE html>
 {% extends 'base.html' %}
 {% load static %}
+{% block stylesheets %}
+<style>
+#id_git_repo_link_container {
+  display:none;
+}
+</style>
+{% endblock %}
+{% block javascripts %}
+<script type="text/javascript">
+function check_github_box(checkbox) {
+  let git_repo_link_container = document.getElementById("id_git_repo_link_container");
+  let model_code_container = document.getElementById("id_model_code_container");
+  if(checkbox.checked) {
+      git_repo_link_container.style.display="block";
+      model_code_container.style.display="none";
+  } else {
+      git_repo_link_container.style.display="none";
+      model_code_container.style.display="block";
+  }
+}
+window.onload = function () {
+  let checkbox = document.getElementById("id_is_github");
+  check_github_box(checkbox);
+  checkbox.addEventListener( 'change', function() {
+    check_github_box(this);
+  });
+}
+</script>
+{% endblock %}
 {% block content %}
 {% if user.is_authenticated %}
   <form action="" method="post" class="form-horizontal" enctype="multipart/form-data" >
-      <div class="form-group">
-        Model Code: <input type="file" name="model_code" id="model_code" accept=".zip">
-      </div>
       {% csrf_token %}
       {% include 'model/form-template.html'%}
+      <div class="form-group" id="id_model_code_container">
+        Model Code: <input type="file" name="model_code" id="model_code" accept=".zip">
+      </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <button type="Submit">Submit</button>

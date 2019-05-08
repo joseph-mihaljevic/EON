@@ -10,16 +10,19 @@ hr {
 }
 </style>
 {% if UserModels %}
-{% for Model in UserModels %}
-  <div class="d">
-    <label>{{Model.model_name}} </label>
-      <a href="{% url 'view_user_model' Model.pk%}">view</a>
-      <!-- <a href="{% url 'Update-UserModel' Model.pk%}">edit</a> -->
-      <a href="{% url 'Delete-UserModel' Model.pk%}">delete</a>
+<div id="models_list">
+  {% for Model in UserModels %}
+    <div class="d">
+      <label>{{Model.model_name}} </label>
+        <a href="{% url 'view_user_model' Model.pk%}">view</a>
+        {% if Model.tags %} <br> Tags: {% for tag in Model.tags %}{{tag}},{% endfor %} {% endif %}
+        <!-- <a href="{% url 'Update-UserModel' Model.pk%}">edit</a> -->
+        <!-- <a href="{% url 'Delete-UserModel' Model.pk%}">delete</a> -->
 
-    <hr>
-  </div>
-{% endfor%}
+      <hr>
+    </div>
+  {% endfor%}
+</div>
 {% else %}
   <p>No Models Found !</p>
 {% endif %}

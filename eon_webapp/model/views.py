@@ -40,7 +40,7 @@ class Index(generic.ListView):
 
 class CreateUserModel(CreateView):
     model = UserModel
-    fields = ['model_name','description','code_language','executable_file_name','is_github','git_repo_link']
+    fields = ['model_name','description','code_language','executable_file_name','is_github','git_repo_link','tags']
     template_name = 'model/UserModel_Create.html'
     def get_success_url(self):
         return reverse('update_graph_json', args=(self.object.id,))
@@ -174,10 +174,14 @@ class UpdateModelView(UpdateView):
 
 def view_user_model(request,pk):
     model = UserModel.objects.get(pk=pk)
+    model.views+=1
+    model.save()
     context={"id":pk,"url_path":"/model/View/%i/"%pk}
     context["thread"]=model.thread
     context["comments"]=Comment.objects.filter(thread = model.thread)
     context["view_source"]="Model"
+    context["user"]=request.user
+    context["model"]=model
 
     folder_location = str(model.folder_location)
     csv_location = "%s/output.csv"%folder_location
@@ -238,6 +242,14 @@ def view_user_model(request,pk):
     context["parameters"]=parameters
     print(parameters)
     return render(request, 'model/view_user_model.html',context)
+
+def pull_from_git(request,model_id):
+    model = UserModel.objects.get(pk=model_id)
+    if(model.is_github):
+        print("Pulling from repository %s into folder %s." % (model.git_repo_link,model.folder_location))
+        subprocess.run(["git","pull"],cwd=model.folder_location)
+    return redirect("view_user_model",pk=model_id)
+
 
 # def CreateModelViewForm(request):
 #     form = ModelViewForm()

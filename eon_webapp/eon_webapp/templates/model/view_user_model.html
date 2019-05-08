@@ -6,7 +6,10 @@
 {% endblock %}
 
 {% block content %}
-<div id="graph-container">
+<div style="position:relative" id="graph-container">
+  {% if user == model.owner and model.is_github %}
+  <a style="position:absolute; right:0px; bottom:0px" href="{% url 'pull_from_git' model_id=model.id %}">Pull git code</a>
+  {% endif %}
   <div id="graph-div">
   </div>
   <div id="form-div">
