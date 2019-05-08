@@ -10,21 +10,26 @@ from django.contrib.auth.models import User
 
 
 
-#class User_Likes_Models(models.Model):
-#    user = models.ManyToManyField(User)
-#    liked_models = models.ForeignKey(User, related_name='vu_f',null=True, on_delete="remove")
 
-
+# As the default User profile doesn't contain all the fields we need, we
+# created a simple 1 to 1 table to store all of a user’s information.
 class Profile(models.Model):
     user_pk = models.ForeignKey(User, on_delete=models.CASCADE)
     pic = models.TextField(max_length=500)
+
+    #The following are fextfields to store User profile personal information)
     bio = models.TextField(max_length=500, blank=True)
     email = models.TextField(max_length=500, blank=True)
     affiliation = models.TextField(max_length=500, blank=True)
     name = models.TextField(max_length=500, blank=True)
+
+    #This is a Django function that allows redirects after editing or creating
+    # Table entries
     def get_absolute_url(self):
         return reverse('dashboard')
         #return reverse('display_UserInfo', kwargs={'username':self.pk})
+
+    #Is Ran when a user first visits their profile page. This function creates a Profile table for that given user.
     @classmethod
     def make_profile(cls, user_pk):
         profile, created = cls.objects.get_or_create(
@@ -39,7 +44,9 @@ class Profile(models.Model):
         profile.save()
 
 
-
+#Is a Table representing Freindship relations between users.
+# a Friend relation is created after a FriendRequest has been made,
+# and is accepted
 class Friend(models.Model):
     user         = models.ForeignKey(User, related_name='u_f',null=True, on_delete="remove")
     viewing_user = models.ForeignKey(User, related_name='vu_f',null=True, on_delete="remove")
@@ -62,6 +69,7 @@ class Friend(models.Model):
         friend.delete()
         friend.save()
 
+#Is a Table representing FriendRequests made between users. 
 class FriendRequest(models.Model):
     user         = models.ForeignKey(User, related_name='u_fr',null=True, on_delete="remove")
     viewing_user = models.ForeignKey(User, related_name='vu_fr',null=True, on_delete="remove")

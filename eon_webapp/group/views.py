@@ -123,18 +123,7 @@ def CreateGroup(request):
 
             #return render(request, 'friend/FormFill_FriendRequest.html', {"from": "You just submitted an invalid Group Form !"})
     return render(request, '404.html',{"Message": "Experienced group doesnt exist!"})
-    #model.created_by = request.user
 
-    #context_object_name = ""
-
-
-    #friends = Group.objects.filter(user=changing_friend.pk,viewing_user= request.user.pk).count()
-
-
-    #context_object_name = "UserModel"
-
-#def CreateGroup(request):
-#    make_Group
 
 
 def Manage_Recruits(request,groupname,operation,userPK):
