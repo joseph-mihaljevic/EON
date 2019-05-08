@@ -19,7 +19,7 @@
   {% if user.is_authenticated %}
 
     {% block stylesheets %}
-      {% include 'model/SideBar/ModelSideBar.html' %}
+      <!-- {% include 'model/SideBar/ModelSideBar.html' %}-->
     {% endblock %}
 
 <h1>Welcome to your Dashboard</h1>
@@ -34,14 +34,6 @@
   {% include 'model/UserModels_list.html'%}
   <!--<button style="font-size:30px;cursor:pointer" onclick="openNav()">Epic First Model</button> -->
 
-  <script>
-  function openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-  }
-  function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-  }
-  </script>
 
 </section>
 
