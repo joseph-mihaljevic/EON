@@ -5,13 +5,30 @@
 <h1>Forums</h1>
   {% if forums %}
   <ul style="list-style: none; padding-left: 0;">
+    <h style="font-weight: 700;">PUBLIC FORUMS</h>
+    <hr style="border: 0.15rem solid #8fe388;">
     {% for forum in forums %}
-      <li>
-        <a href="/forum/view/{{forum.id}}">{{ forum.topic_name }}</a>
-      </li>
-      <hr />
+      {% if forum.group is none %}
+        <li>
+          <a href="/forum/view/{{forum.id}}">{{ forum.topic_name }}</a>
+          <hr>
+        </li>
+      {% endif %}
     {% endfor %}
-  </ul>
+    </ul>
+    <br>
+  <ul style="list-style: none; padding-left: 0;">
+    <h style="font-weight: 700;">GROUP FORUMS</h>
+    <hr style="border: 0.15rem solid #8fe388;">
+    {% for forum in forums %}
+      {% if forum.group is not none %}
+        <li>
+          <a href="/forum/view/{{forum.id}}">{{ forum.topic_name }}</a>
+          <hr>
+        </li>
+      {% endif %}
+    {% endfor %}
+    </ul>
   {% else %}
     <p>There are no forums.</p>
   {% endif %}
