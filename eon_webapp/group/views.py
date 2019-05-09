@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
+from django.core.exceptions import ObjectDoesNotExist
 
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from .models import Group,GroupMember,JoinGroupRequest,GroupInvite
@@ -38,6 +39,11 @@ def view_group(request,groupname):
     context["View_Privlege"] = GroupMember.UserHas_View_Privlege(userPK = request.user.pk, group = context["Group"])
     context["Edit_Privlege"] = GroupMember.UserHas_Edit_Privlege(userPK = request.user.pk, group = context["Group"])
 
+    try:
+        context["Forum_ID"] = Forum.objects.get(group=context["Group"]).id
+    except ObjectDoesNotExist:
+        context["Forum_ID"] = None
+
     context["members"] = GroupMember.objects.filter(group = context["Group"].pk)
     if (request.user.is_authenticated):
         context["Friends"] = Friend.objects.filter(viewing_user = request.user.pk)
@@ -56,11 +62,8 @@ def view_group(request,groupname):
             if 'q' in request.GET and request.GET['q']:
                 context['users'] = User.objects.filter(username__icontains=q)
                 context['query'] = request.GET['q']
-            else:
-                return render(request, 'group/DetailedGroup.html', context)
-            return render(request, 'group/DetailedGroup.html', context)
-        else:
-            return render(request, 'group/DetailedGroup.html', context)
+
+        return render(request, 'group/DetailedGroup.html', context)
 
     else:
         return render(request, 'friend/FormFill_FriendRequest.html', {"from": "Experienced error !"})

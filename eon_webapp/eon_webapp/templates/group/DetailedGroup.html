@@ -11,6 +11,9 @@
 
 <dl>
   <h>Group Name: {{Group.name}}</h>
+  {% if Forum_ID %}
+    <br><h>Group Forum: <a href="{% url 'forum_view' in_id=Forum_ID%}">{{Group.name}} Forum</a></h>
+  {% endif %}
   <dt>About: {{Group.about}}</dt>
   <!--<dt>Created on: NA</dt> -->
 
