@@ -14,7 +14,7 @@
   <script type="text/javascript"
       src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
   </script>
-  
+
 {% endblock %}
 {% block content %}
 <h2>{{forum_name}}</h2>
@@ -33,5 +33,16 @@
 {% else %}
   <p>There are no threads.</p>
 {% endif %}
+{%  if user.is_authenticated %}
   <br><a href="/forum/{{ forum_id }}/create"><button style="font-size:28px;">New Post</button></a>
+{% else %}
+  <!-- <p style="color:white;background-color:red;display:inline-block;">You must sign in to make a post</p> -->
+  <br><a href="/forum/{{ forum_id }}/create"><button style="font-size:28px;">Sign in to Post</button></a>
+{% endif %}
 {% endblock %}
+
+{%  if user.is_authenticated %}
+  Not a member ? <a href="{% url 'Manage_Recruits' Group.name 'Apply' 0%}"> Apply </a>
+{% else %}
+You are not loged in.  Login to apply:<a href="{% url 'login'%}"> Login</a>
+{% endif %}
