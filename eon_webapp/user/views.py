@@ -130,6 +130,11 @@ def view_user(request,username):
         return render(request, 'users/DetailedUser.html',context)
     return render(request, 'friend/FormFill_FriendRequest.html', {"from": "coming soon !"})
 
+def home(request):
+    if request.user.is_authenticated:
+        return (view_user(request,request.user.username))
+
+
 
 class UpdateProfile(UpdateView):
     context = {}

@@ -26,7 +26,7 @@ class Profile(models.Model):
     #This is a Django function that allows redirects after editing or creating
     # Table entries
     def get_absolute_url(self):
-        return reverse('dashboard')
+        return reverse('Home')
         #return reverse('display_UserInfo', kwargs={'username':self.pk})
 
     #Is Ran when a user first visits their profile page. This function creates a Profile table for that given user.
@@ -69,7 +69,7 @@ class Friend(models.Model):
         friend.delete()
         friend.save()
 
-#Is a Table representing FriendRequests made between users. 
+#Is a Table representing FriendRequests made between users.
 class FriendRequest(models.Model):
     user         = models.ForeignKey(User, related_name='u_fr',null=True, on_delete="remove")
     viewing_user = models.ForeignKey(User, related_name='vu_fr',null=True, on_delete="remove")

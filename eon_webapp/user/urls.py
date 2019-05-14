@@ -7,6 +7,7 @@ urlpatterns = [
     path('signup/', views.SignUp.as_view(), name='signup'),
 
     path('<slug:username>', views.view_user,name='display_UserInfo'),
+    path('home/', views.home,name='Home'),
     #path('edit/<int:pk>', views.UpdateProfile.as_view(),name='edit_UserInfo'),
     url(r'^edit/(?P<pk>\d+)/$', views.UpdateProfile.as_view(), name='edit_UserInfo'),
     url(r'^password/$', views.change_password, name='change_UserPassword'),
