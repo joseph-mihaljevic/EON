@@ -8,6 +8,6 @@
 {% block content %}
   <small>{{Message}}</small>
     <br />
-  Visit The newly created group home page: <a href="{% url 'view-group' Group.name %}">{{Group.name}}</a>
+  Visit The group's home page: <a href="{% url 'view-group' Group.name %}">{{Group.name}}</a>
 
 {% endblock %}

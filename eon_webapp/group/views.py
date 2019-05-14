@@ -106,7 +106,6 @@ def List_UsersGroups(request):
 
 def CreateGroup(request):
     #if !groupname:
-    print(request.method)
     if (request.method == 'GET'):
         form = GroupForm()
         fields = ['name','about']

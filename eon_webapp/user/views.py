@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.forms import UserCreationForm,PasswordChangeForm,UserChangeForm
+
 from django.urls import reverse_lazy
 from django.views import generic
 from django.shortcuts import redirect
@@ -15,6 +15,9 @@ from group.models import Group,GroupMember,JoinGroupRequest,GroupInvite
 #for my testing
 from django.http import HttpResponse
 
+from django.contrib.auth.forms import PasswordChangeForm,UserChangeForm
+
+from .admin import UserCreationForm
 class SignUp(generic.CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')

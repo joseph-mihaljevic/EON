@@ -15,16 +15,18 @@
   <form method="post">
     {% csrf_token %}
     {% for field in form %}
-    <div class="from-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <span class="text-danger small">{{field.error}}</span>
-      </div>
-      <label class="control-label col-sm-2">{{field.label_tag}}</label>
-      <div class="col-sm-10">{{field}}</div>
-    </div>
-    {% endfor%}
-
-    <button type="submit">Save changes</button>
+      <p>
+        {{ field.label_tag }}<br>
+        {{ field }}
+        {% if field.help_text %}
+          <small style="color: grey">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+    {% endfor %}
+    <button type="submit">Save Changes</button>
   </form>
   {% else %}
     <p>You are not logged in</p>
